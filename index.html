@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMG1 Closing Report</title>
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* Print styles */
+    @media print {
+      #app-header { position: relative; }
+      .side-panel { display: none !important; }
+      .app-body { grid-template-columns: 1fr !important; }
+      .btn-hdr, .header-actions { display: none !important; }
+      .card { break-inside: avoid; }
+    }
+    .text-success { color: var(--green) !important; }
+    .text-warning { color: #c4a000 !important; }
+    .text-danger  { color: var(--red) !important; }
+    [data-theme="dark"] .text-warning { color: var(--yellow) !important; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header id="app-header">
+  <div class="header-inner">
+
+    <!-- Logo -->
+    <div class="logo-block">
+      <div class="logo-badge">SMG<br>1</div>
+      <div class="logo-text">
+        <div class="logo-title">Closing Report</div>
+        <div class="logo-sub">Dashboard Operacional</div>
+      </div>
+    </div>
+
+    <!-- Meta fields -->
+    <div class="header-meta">
+      <div class="header-field-group">
+        <label>Data</label>
+        <input type="date" data-field="meta-data" />
+      </div>
+      <div class="header-field-group">
+        <label>Turno</label>
+        <select data-field="meta-turno">
+          <option value="">Selecionar</option>
+          <option value="AM1">AM1</option>
+          <option value="AM2">AM2</option>
+          <option value="PM1">PM1</option>
+          <option value="PM2">PM2</option>
+          <option value="N1">N1</option>
+          <option value="N2">N2</option>
+        </select>
+      </div>
+      <div class="header-field-group">
+        <label>Responsável</label>
+        <input type="text" data-field="meta-responsavel" placeholder="Nome do TL" style="min-width:120px;" />
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="header-actions">
+      <button class="btn-hdr btn-hdr-red" id="btn-new">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Novo
+      </button>
+      <button class="btn-hdr btn-hdr-ghost" id="btn-save">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Salvar
+      </button>
+      <button class="btn-hdr btn-hdr-ghost" id="btn-load">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Carregar
+      </button>
+      <button class="btn-hdr btn-hdr-yellow" id="btn-copy-wa-hdr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        WhatsApp
+      </button>
+      <button class="btn-hdr btn-hdr-ghost" id="btn-pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        PDF
+      </button>
+      <button class="btn-hdr btn-hdr-ghost" id="btn-excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Excel
+      </button>
+      <button class="btn-hdr btn-hdr-ghost" id="btn-dark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        Escuro
+      </button>
+    </div>
+
+    <!-- Auto-save badge -->
+    <div class="save-indicator">
+      <div class="save-dot"></div>
+      <span id="save-time">Sincronizado</span>
+    </div>
+
+  </div>
+</header>
+
+<!-- ============================================================
+     APP BODY — Main + Side
+     ============================================================ -->
+<div class="app-body">
+
+  <!-- ── MAIN PANEL ── -->
+  <main class="main-panel">
+
+    <!-- ─── 1. Performance Geral ─────────────────────────────── -->
+    <div class="section-label">📈 Performance Geral</div>
+
+    <!-- Input Row -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon yellow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <span class="card-title">Indicadores de Performance</span>
+        <span class="card-subtitle">Atualiza automaticamente</span>
+      </div>
+      <div class="card-body">
+        <div class="input-grid-3" style="gap:14px;">
+          <!-- FAG -->
+          <div class="field-group">
+            <label class="field-label">Fechamento FAG (%)</label>
+            <input type="number" class="field-input" data-field="fag-pct" placeholder="Ex: 72.44" step="0.01" min="0" max="100" />
+          </div>
+          <!-- OOT Ciclo -->
+          <div class="field-group">
+            <label class="field-label">OOT Ciclo (%)</label>
+            <input type="number" class="field-input" data-field="oot-ciclo" placeholder="Ex: 96.9" step="0.1" min="0" max="100" />
+          </div>
+          <!-- OOT Onda -->
+          <div class="field-group">
+            <label class="field-label">OOT Onda (%)</label>
+            <input type="number" class="field-input" data-field="oot-onda" placeholder="Ex: 92.8" step="0.1" min="0" max="100" />
+          </div>
+          <!-- OOT Ciclo YMS -->
+          <div class="field-group">
+            <label class="field-label">OOT Ciclo YMS (%)</label>
+            <input type="number" class="field-input" data-field="oot-ciclo-yms" placeholder="Ex: 64.6" step="0.1" min="0" max="100" />
+          </div>
+          <!-- OOT Onda YMS -->
+          <div class="field-group">
+            <label class="field-label">OOT Onda YMS (%)</label>
+            <input type="number" class="field-input" data-field="oot-onda-yms" placeholder="Ex: 65.5" step="0.1" min="0" max="100" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Cards Grid -->
+    <div class="kpi-grid">
+
+      <!-- FAG -->
+      <div class="kpi-card status-gray" id="kpi-fag">
+        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="kpi-label">Fechamento FAG</div>
+        <div class="kpi-value">—</div>
+        <span class="kpi-badge badge-gray">Aguardando</span>
+      </div>
+
+      <!-- OOT Ciclo -->
+      <div class="kpi-card status-gray" id="kpi-oot-ciclo">
+        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="kpi-label">OOT Ciclo</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-meta">Meta ≥ 95%</div>
+      </div>
+
+      <!-- OOT Onda -->
+      <div class="kpi-card status-gray" id="kpi-oot-onda">
+        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20h20M5 20V10l7-7 7 7v10"/></svg></div>
+        <div class="kpi-label">OOT Onda</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-meta">Meta ≥ 95%</div>
+      </div>
+
+      <!-- OOT Ciclo YMS -->
+      <div class="kpi-card status-gray" id="kpi-oot-ciclo-yms">
+        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div class="kpi-label">OOT Ciclo YMS</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-meta">Meta ≥ 90%</div>
+      </div>
+
+      <!-- OOT Onda YMS -->
+      <div class="kpi-card status-gray" id="kpi-oot-onda-yms">
+        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div class="kpi-label">OOT Onda YMS</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-meta">Meta ≥ 90%</div>
+      </div>
+
+    </div>
+
+    <!-- FAG Donut -->
+    <div class="card" style="max-width:380px;">
+      <div class="card-header">
+        <div class="card-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="card-title">Fechamento FAG</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:160px;">
+          <canvas id="chart-fag"></canvas>
+          <div class="donut-center">
+            <div class="donut-center-value" id="fag-center-value">—</div>
+            <div class="donut-center-label">FAG</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── 2. Totais Operacionais ────────────────────────────── -->
+    <div class="section-label">📌 Totais Operacionais</div>
+
+    <div class="section-row">
+
+      <!-- Inputs -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <span class="card-title">Dados de Entrada</span>
+        </div>
+        <div class="card-body" style="display:flex; flex-direction:column; gap:14px;">
+          <div class="field-group">
+            <label class="field-label">Total Planejado (rotas)</label>
+            <input type="number" class="field-input" data-field="total-planejado" placeholder="Ex: 254" min="0" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Delay (rotas)</label>
+            <input type="number" class="field-input" data-field="delay-total" placeholder="Ex: 90" min="0" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Pendentes (rotas)</label>
+            <input type="number" class="field-input" data-field="pendentes-total" placeholder="Ex: 7" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultados automáticos -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="card-title">Resultado Automático</span>
+        </div>
+        <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
+          <div class="stat-row">
+            <span class="stat-row-label">Rotas Concluídas</span>
+            <span class="stat-row-value" id="calc-realizado">—</span>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill fill-green" id="prog-realizado" style="width:0%"></div></div>
+          <div class="stat-row">
+            <span class="stat-row-label">Taxa de Conclusão</span>
+            <span class="stat-row-value" id="calc-realizado-pct">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row-label">% Delay</span>
+            <span class="stat-row-value" id="calc-delay-pct">—</span>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill fill-red" id="prog-delay" style="width:0%"></div></div>
+          <div class="stat-row">
+            <span class="stat-row-label">% Pendentes</span>
+            <span class="stat-row-value" id="calc-pendentes-pct">—</span>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill fill-yellow" id="prog-pendentes" style="width:0%"></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- KPI row for totais -->
+    <div class="kpi-grid">
+      <div class="kpi-card status-gray" id="kpi-total">
+        <div class="kpi-label">Total Planejado</div>
+        <div class="kpi-value">—</div>
+        <div class="kpi-meta">rotas</div>
+      </div>
+      <div class="kpi-card status-gray" id="kpi-realizado">
+        <div class="kpi-label">Concluídas</div>
+        <div class="kpi-value">—</div>
+        <span class="kpi-badge badge-gray">—</span>
+      </div>
+      <div class="kpi-card status-gray" id="kpi-delay">
+        <div class="kpi-label">Delay</div>
+        <div class="kpi-value">—</div>
+        <span class="kpi-badge badge-gray">—</span>
+      </div>
+      <div class="kpi-card status-gray" id="kpi-pendentes">
+        <div class="kpi-label">Pendentes</div>
+        <div class="kpi-value">—</div>
+        <span class="kpi-badge badge-gray">—</span>
+      </div>
+    </div>
+
+    <!-- ─── 3. Carros Atrasados (Ondas) ──────────────────────── -->
+    <div class="section-label">🚚 Carros Atrasados por Onda</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <span class="card-title">Ondas de Despacho</span>
+        <span class="card-subtitle">OOT calculado automaticamente</span>
+      </div>
+      <div class="card-body">
+        <div class="onda-table-wrap">
+          <table class="onda-table">
+            <thead>
+              <tr>
+                <th>Onda</th>
+                <th>Status</th>
+                <th>Pendentes</th>
+                <th>Delay</th>
+                <th>OOT %</th>
+                <th>OOT YMS %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 1ª Onda -->
+              <tr data-onda-row="o1">
+                <td><span class="onda-label">1ª Onda</span></td>
+                <td><span class="onda-badge badge-gray">—</span></td>
+                <td><input type="number" data-field="o1-pendentes" placeholder="0" min="0" /></td>
+                <td><input type="number" data-field="o1-delay" placeholder="0" min="0" /></td>
+                <td><span class="oot-value" data-oot="o1">—</span></td>
+                <td><input type="number" data-field="o1-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o1"></span></td>
+              </tr>
+              <!-- 2ª Onda -->
+              <tr data-onda-row="o2">
+                <td><span class="onda-label">2ª Onda</span></td>
+                <td><span class="onda-badge badge-gray">—</span></td>
+                <td><input type="number" data-field="o2-pendentes" placeholder="0" min="0" /></td>
+                <td><input type="number" data-field="o2-delay" placeholder="0" min="0" /></td>
+                <td><span class="oot-value" data-oot="o2">—</span></td>
+                <td><input type="number" data-field="o2-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o2"></span></td>
+              </tr>
+              <!-- 3ª Onda -->
+              <tr data-onda-row="o3">
+                <td><span class="onda-label">3ª Onda</span></td>
+                <td><span class="onda-badge badge-gray">—</span></td>
+                <td><input type="number" data-field="o3-pendentes" placeholder="0" min="0" /></td>
+                <td><input type="number" data-field="o3-delay" placeholder="0" min="0" /></td>
+                <td><span class="oot-value" data-oot="o3">—</span></td>
+                <td><input type="number" data-field="o3-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o3"></span></td>
+              </tr>
+              <!-- 4ª Onda -->
+              <tr data-onda-row="o4">
+                <td><span class="onda-label">4ª Onda</span></td>
+                <td><span class="onda-badge badge-gray">—</span></td>
+                <td><input type="number" data-field="o4-pendentes" placeholder="0" min="0" /></td>
+                <td><input type="number" data-field="o4-delay" placeholder="0" min="0" /></td>
+                <td><span class="oot-value" data-oot="o4">—</span></td>
+                <td><input type="number" data-field="o4-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o4"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Summary chips -->
+        <div class="onda-summary-strip">
+          <div class="onda-summary-chip">Total: <span id="onda-sum-total">0</span></div>
+          <div class="onda-summary-chip">Delay: <span id="onda-sum-delay">0</span></div>
+          <div class="onda-summary-chip">Pendentes: <span id="onda-sum-pend">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onda Charts -->
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
+          <span class="card-title">OOT por Onda</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap tall"><canvas id="chart-oot"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <span class="card-title">Delay e Pendentes por Onda</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap tall"><canvas id="chart-delay"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── 4. Sacas ──────────────────────────────────────────── -->
+    <div class="section-label">🎒 Sacas</div>
+
+    <div class="section-row">
+
+      <!-- Inputs Sacas -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <span class="card-title">Controle de Sacas</span>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
+          <div class="field-group">
+            <label class="field-label">Total de Sacas</label>
+            <input type="number" class="field-input" data-field="sacas-total" placeholder="Ex: 221" min="0" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Sacas Fechadas</label>
+            <input type="number" class="field-input" data-field="sacas-fechadas" placeholder="Ex: 184" min="0" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Sacas para Auditar</label>
+            <input type="number" class="field-input" data-field="sacas-auditar" placeholder="Ex: 37" min="0" />
+          </div>
+
+          <!-- Results -->
+          <div style="padding-top:8px;border-top:1px solid var(--border);">
+            <div class="stat-row">
+              <span class="stat-row-label">% Fechadas</span>
+              <span class="stat-row-value" id="calc-sacas-pct">—</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-green" id="prog-sacas" style="width:0%"></div></div>
+            <div class="stat-row">
+              <span class="stat-row-label">Pendentes</span>
+              <span class="stat-row-value" data-calc="sacas-pendentes">—</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-row-label">% para Auditar</span>
+              <span class="stat-row-value" id="calc-sacas-auditar-pct">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donut Sacas -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <span class="card-title">Distribuição de Sacas</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap" style="height:200px;"><canvas id="chart-sacas"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── 5. Volume ─────────────────────────────────────────── -->
+    <div class="section-label">📦 Volume Processado</div>
+
+    <div class="section-row">
+      <!-- Inputs Volume -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
+          </div>
+          <span class="card-title">Volume Processado</span>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
+          <div class="field-group">
+            <label class="field-label">Volume Total Processado</label>
+            <input type="number" class="field-input" data-field="vol-total" placeholder="Ex: 32645" min="0" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Backlog</label>
+            <input type="number" class="field-input" data-field="vol-backlog" placeholder="Ex: 1914" min="0" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Primeira Vez</label>
+            <input type="number" class="field-input" data-field="vol-pv" placeholder="Ex: 20731" min="0" />
+          </div>
+
+          <!-- Results -->
+          <div style="padding-top:8px;border-top:1px solid var(--border);">
+            <div class="stat-row">
+              <span class="stat-row-label">% Primeira Vez</span>
+              <span class="stat-row-value" id="calc-vol-pv-pct">—</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-green" id="prog-vol-pv" style="width:0%"></div></div>
+            <div class="stat-row">
+              <span class="stat-row-label">% Backlog</span>
+              <span class="stat-row-value" id="calc-vol-backlog-pct">—</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-red" id="prog-vol-backlog" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart Volume -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </div>
+          <span class="card-title">Distribuição de Volume</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap" style="height:200px;"><canvas id="chart-vol"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── 6. Volumosos ──────────────────────────────────────── -->
+    <div class="section-label">📦 Volumosos</div>
+
+    <div class="section-row">
+      <!-- Inputs -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <span class="card-title">Volumosos</span>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
+          <div class="field-group">
+            <label class="field-label">One Bipe</label>
+            <input type="number" class="field-input" data-field="vol-onebipe" placeholder="Ex: 1092" min="0" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Em Rota</label>
+            <input type="number" class="field-input" data-field="vol-emrota" placeholder="Ex: 200" min="0" />
+          </div>
+          <!-- Auto -->
+          <div style="padding-top:8px;border-top:1px solid var(--border);">
+            <div class="stat-row">
+              <span class="stat-row-label">Total Volumosos</span>
+              <span class="stat-row-value" id="calc-vol-total-vol">—</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-row-label">% Em Rota</span>
+              <span class="stat-row-value" id="calc-vol-emrota-pct">—</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-blue" id="prog-vol-vol" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart Volumosos -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+          </div>
+          <span class="card-title">Distribuição Volumosos</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap" style="height:200px;"><canvas id="chart-vol2"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── 7. Observações ────────────────────────────────────── -->
+    <div class="section-label">📝 Observações</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon gray" style="background:var(--gray-100);color:var(--text-muted);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <span class="card-title">Observações do Turno</span>
+        <span class="card-subtitle">Incluído automaticamente no relatório WhatsApp</span>
+      </div>
+      <div class="card-body">
+        <textarea class="obs-textarea" data-field="observacoes" placeholder="Descreva ocorrências, intercorrências ou informações relevantes do turno..."></textarea>
+      </div>
+    </div>
+
+  </main><!-- /main-panel -->
+
+  <!-- ── SIDE PANEL — WhatsApp Preview ── -->
+  <aside class="side-panel">
+    <div class="side-header">
+      <div class="side-title">
+        <div class="side-title-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        </div>
+        Prévia WhatsApp
+      </div>
+      <span class="side-live-badge">● AO VIVO</span>
+    </div>
+
+    <div class="wa-preview-area">
+      <div class="wa-bubble" id="wa-preview">
+        Preencha os campos ao lado para gerar o relatório automaticamente...
+      </div>
+    </div>
+
+    <div class="side-footer">
+      <button class="btn-copy-wa" id="btn-copy-wa">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        Copiar para WhatsApp
+      </button>
+    </div>
+  </aside>
+
+</div><!-- /app-body -->
+
+<!-- ── Toast ── -->
+<div id="toast"></div>
+
+<!-- ── Scripts ── -->
+<script src="js/storage.js"></script>
+<script src="js/export.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
