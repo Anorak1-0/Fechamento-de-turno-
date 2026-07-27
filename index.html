@@ -1,631 +1,970 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SMG1 Closing Report</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SMG1 Closing Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --yellow:#FFE600;--yellow-dk:#C8A800;--yellow-lt:#FFFBE0;
+  --blue:#1A1F71;--blue-mid:#2D3480;--blue-lt:#EEF0FF;
+  --green:#00A650;--green-lt:#E5F7EE;
+  --red:#E02020;--red-lt:#FDEAEA;
+  --orange:#FF7500;--orange-lt:#FFF1E5;
+  --bg:#F1F3F9;--surface:#FFFFFF;--border:#E0E5EF;
+  --text:#1A1D2B;--text-2:#4A5068;--text-3:#8590AD;
+  --sh1:0 1px 4px rgba(26,31,113,.05);--sh2:0 3px 12px rgba(26,31,113,.08);--sh3:0 6px 24px rgba(26,31,113,.12);
+  --r:10px;--r-sm:6px;
+}
+[data-theme="dark"]{
+  --bg:#0D0F1C;--surface:#161829;--border:#252A42;
+  --text:#E8ECFF;--text-2:#A8AECE;--text-3:#5E6480;
+  --sh1:0 1px 4px rgba(0,0,0,.25);--sh2:0 3px 12px rgba(0,0,0,.35);--sh3:0 6px 24px rgba(0,0,0,.5);
+  --blue-lt:rgba(61,77,183,.15);--green-lt:rgba(0,166,80,.12);--red-lt:rgba(224,32,32,.12);
+  --orange-lt:rgba(255,117,0,.12);--yellow-lt:rgba(255,230,0,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;transition:background .25s,color .25s}
+input,select,textarea,button{font-family:inherit}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+a{text-decoration:none}
 
-  <!-- Bootstrap 5 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css" />
+/* HEADER */
+#hdr{background:var(--blue);position:sticky;top:0;z-index:300;box-shadow:0 2px 20px rgba(10,12,50,.45)}
+.hdr-r1{display:flex;align-items:center;gap:14px;padding:10px 28px;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-mark{width:40px;height:40px;background:var(--yellow);border-radius:var(--r-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:11px;line-height:1.1;color:var(--blue);letter-spacing:-.3px;flex-shrink:0}
+.logo-txt{line-height:1.15}
+.logo-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:.1px}
+.logo-sub{font-size:10px;font-weight:500;color:rgba(255,255,255,.42);text-transform:uppercase;letter-spacing:1px}
+.hdr-meta{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-sm);padding:5px 10px}
+.meta-pill label{font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
+.meta-pill input,.meta-pill select{background:transparent;border:none;outline:none;color:#fff;font-size:13px;font-weight:600;min-width:80px;cursor:pointer;color-scheme:dark}
+.meta-pill select option{background:#1A1F71}
+.hdr-save{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.35);white-space:nowrap}
+.save-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}55%{opacity:.2}}
+.hdr-r2{display:flex;align-items:center;gap:5px;padding:7px 28px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .14s;white-space:nowrap}
+.btn svg{width:13px;height:13px;flex-shrink:0}
+.btn-ghost{background:rgba(255,255,255,.09);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.13)}
+.btn-ghost:hover{background:rgba(255,255,255,.16)}
+.btn-yellow{background:var(--yellow);color:var(--blue);font-weight:700}
+.btn-yellow:hover{background:#EDD300}
+.btn-del{background:rgba(224,32,32,.12);color:#FF7070;border:1px solid rgba(224,32,32,.22)}
+.btn-del:hover{background:var(--red);color:#fff}
+.sep{width:1px;height:18px;background:rgba(255,255,255,.12);flex-shrink:0}
 
-  <style>
-    /* Print styles */
-    @media print {
-      #app-header { position: relative; }
-      .side-panel { display: none !important; }
-      .app-body { grid-template-columns: 1fr !important; }
-      .btn-hdr, .header-actions { display: none !important; }
-      .card { break-inside: avoid; }
-    }
-    .text-success { color: var(--green) !important; }
-    .text-warning { color: #c4a000 !important; }
-    .text-danger  { color: var(--red) !important; }
-    [data-theme="dark"] .text-warning { color: var(--yellow) !important; }
-  </style>
+/* LAYOUT */
+.shell{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 330px;min-height:calc(100vh - 93px)}
+.main{padding:20px 20px 40px 26px;display:flex;flex-direction:column;gap:14px}
+
+/* SECTION LABEL */
+.sec{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1.3px;display:flex;align-items:center;gap:8px;padding-top:6px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh1);overflow:hidden;transition:box-shadow .2s}
+.card:hover{box-shadow:var(--sh2)}
+.card-hd{display:flex;align-items:center;gap:9px;padding:11px 15px;border-bottom:1px solid var(--border)}
+.c-ico{width:28px;height:28px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-ico svg{width:14px;height:14px}
+.ico-y{background:var(--yellow-lt);color:#9A7A00}.ico-b{background:var(--blue-lt);color:var(--blue)}
+.ico-g{background:var(--green-lt);color:var(--green)}.ico-r{background:var(--red-lt);color:var(--red)}
+.ico-o{background:var(--orange-lt);color:var(--orange)}.ico-n{background:var(--bg);color:var(--text-3)}
+[data-theme="dark"] .ico-y{color:var(--yellow)}[data-theme="dark"] .ico-b{color:#8B9CF0}
+[data-theme="dark"] .ico-g{color:#3DCC80}[data-theme="dark"] .ico-r{color:#FF6B6B}
+[data-theme="dark"] .ico-o{color:#FFB070}
+.c-title{font-size:12px;font-weight:700;color:var(--text)}.c-sub{font-size:11px;color:var(--text-3);margin-left:auto}
+.card-bd{padding:14px 15px}
+
+/* FORM */
+.fld{display:flex;flex-direction:column;gap:3px}
+.lbl{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+.inp{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:14px;font-weight:600;color:var(--text);outline:none;width:100%;transition:border-color .14s,box-shadow .14s,background .14s}
+.inp:focus{border-color:var(--blue-mid);background:var(--surface);box-shadow:0 0 0 3px rgba(45,52,128,.09)}
+[data-theme="dark"] .inp{background:rgba(255,255,255,.05);color:var(--text)}
+[data-theme="dark"] .inp:focus{background:rgba(255,255,255,.08)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;position:relative;overflow:hidden;box-shadow:var(--sh1);transition:box-shadow .2s,transform .15s}
+.kpi:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0;background:var(--border);transition:background .3s}
+.kpi.ok::before{background:var(--green)}.kpi.warn::before{background:var(--yellow-dk)}.kpi.bad::before{background:var(--red)}
+.kpi-bg{position:absolute;right:6px;top:50%;transform:translateY(-50%);opacity:.04;pointer-events:none}
+.kpi-bg svg{width:44px;height:44px}[data-theme="dark"] .kpi-bg{opacity:.07}
+.kpi-lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
+.kpi-val{font-size:22px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;margin-bottom:5px}
+.kpi-val.lg{font-size:26px}
+.kpi-tag{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px}
+.tg-ok{background:var(--green-lt);color:var(--green)}.tg-warn{background:var(--yellow-lt);color:#8A6A00}
+.tg-bad{background:var(--red-lt);color:var(--red)}.tg-n{background:var(--bg);color:var(--text-3)}
+[data-theme="dark"] .tg-ok{background:rgba(0,166,80,.14);color:#3DCC80}
+[data-theme="dark"] .tg-warn{background:rgba(255,230,0,.10);color:var(--yellow)}
+[data-theme="dark"] .tg-bad{background:rgba(224,32,32,.14);color:#FF6B6B}
+[data-theme="dark"] .tg-n{background:rgba(255,255,255,.05);color:var(--text-3)}
+.kpi-meta{font-size:10px;color:var(--text-3);margin-top:3px}
+
+/* STAT ROW */
+.sr{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:none}
+.sr-l{font-size:11px;color:var(--text-3);font-weight:500}.sr-r{font-size:12px;font-weight:700;color:var(--text)}
+
+/* PROGRESS */
+.pg{background:var(--bg);border-radius:99px;height:5px;overflow:hidden;margin-top:4px}
+.pgf{height:100%;border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.g{background:linear-gradient(90deg,#00A650,#00D46A)}.r{background:linear-gradient(90deg,#E02020,#FF4444)}
+.y{background:linear-gradient(90deg,#C8A800,#FFD000)}.b{background:linear-gradient(90deg,#3D4DB7,#7B86E8)}
+
+/* ONDAS */
+.ondas{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.onda{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh1)}
+.onda-hd{background:var(--blue);padding:8px 11px;display:flex;align-items:center;justify-content:space-between}
+.onda-name{font-size:12px;font-weight:700;color:#fff}
+.onda-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px}
+.ob-n{background:rgba(255,255,255,.15);color:rgba(255,255,255,.65)}
+.ob-ok{background:var(--green);color:#fff}.ob-warn{background:var(--yellow);color:var(--blue)}.ob-bad{background:var(--red);color:#fff}
+.onda-bd{padding:10px 11px;display:flex;flex-direction:column;gap:7px}
+.onda-inps{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.onda-fld{display:flex;flex-direction:column;gap:2px}
+.onda-lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+.onda-inp{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:13px;font-weight:700;color:var(--text);outline:none;width:100%;transition:border-color .14s,box-shadow .14s;-moz-appearance:textfield}
+.onda-inp:focus{border-color:var(--blue-mid);box-shadow:0 0 0 2px rgba(45,52,128,.1)}
+[data-theme="dark"] .onda-inp{background:rgba(255,255,255,.05)}
+.onda-inp::-webkit-outer-spin-button,.onda-inp::-webkit-inner-spin-button{-webkit-appearance:none}
+.onda-div{height:1px;background:var(--border)}
+.onda-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.onda-stat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 6px;text-align:center}
+[data-theme="dark"] .onda-stat{background:rgba(255,255,255,.04)}
+.os-val{font-size:14px;font-weight:800;color:var(--text);line-height:1}
+.os-lbl{font-size:8px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.c-ok{color:var(--green)!important}.c-warn{color:var(--yellow-dk)!important}.c-bad{color:var(--red)!important}
+[data-theme="dark"] .c-warn{color:var(--yellow)!important}
+.onda-strip{display:flex;gap:7px;flex-wrap:wrap}
+.strip-pill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:3px 11px;font-size:11px;font-weight:600;color:var(--text-3)}
+.strip-pill b{color:var(--text)}
+
+/* CHART */
+.ch{position:relative;width:100%}
+.ch canvas{display:block}
+.ch-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.ch-cv{font-size:20px;font-weight:800;color:var(--text);line-height:1}
+.ch-cl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+
+/* TEXTAREA */
+.ta{width:100%;min-height:88px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 11px;font-size:13px;color:var(--text);resize:vertical;outline:none;transition:border-color .14s,box-shadow .14s;line-height:1.6}
+.ta:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(45,52,128,.09);background:var(--surface)}
+[data-theme="dark"] .ta{background:rgba(255,255,255,.05)}
+
+/* SIDE */
+.side{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:93px;height:calc(100vh - 93px);overflow:hidden}
+.side-hd{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.side-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)}
+.wa-ico{width:26px;height:26px;background:#25D366;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.wa-ico svg{width:14px;height:14px}
+.live{font-size:9px;font-weight:700;background:var(--green-lt);color:var(--green);padding:2px 7px;border-radius:99px;text-transform:uppercase;letter-spacing:.4px}
+[data-theme="dark"] .live{background:rgba(0,166,80,.14);color:#3DCC80}
+.wa-scroll{flex:1;overflow-y:auto;padding:12px 14px}
+.wa-bubble{background:#F0F8F2;border:1px solid #CCE8D5;border-radius:10px 10px 10px 3px;padding:10px 12px;font-size:11.5px;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word}
+[data-theme="dark"] .wa-bubble{background:rgba(0,150,55,.06);border-color:rgba(0,150,55,.14)}
+.side-ft{padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0}
+.btn-wa{width:100%;padding:10px;background:#25D366;color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .14s}
+.btn-wa:hover{background:#1EBE5C}.btn-wa.done{background:var(--blue)}.btn-wa svg{width:15px;height:15px}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:#1A1D2B;color:#fff;padding:8px 14px;border-radius:var(--r);font-size:12px;font-weight:600;box-shadow:var(--sh3);display:flex;align-items:center;gap:7px;opacity:0;transform:translateY(5px);pointer-events:none;transition:opacity .18s,transform .18s}
+#toast.on{opacity:1;transform:translateY(0)}
+#toast svg{width:13px;height:13px}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.shell{grid-template-columns:1fr}.side{position:relative;top:0;height:auto;border-left:none;border-top:1px solid var(--border);overflow:visible}.wa-scroll{max-height:260px}.ondas{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.hdr-r1{padding:8px 14px}.hdr-r2{padding:6px 14px}.main{padding:12px 12px 32px}.hdr-meta{display:none}.kpis{grid-template-columns:1fr 1fr}.ondas{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.g5{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.ondas{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 <body>
 
-<!-- ============================================================
-     HEADER
-     ============================================================ -->
-<header id="app-header">
-  <div class="header-inner">
-
-    <!-- Logo -->
-    <div class="logo-block">
-      <div class="logo-badge">SMG<br>1</div>
-      <div class="logo-text">
-        <div class="logo-title">Closing Report</div>
+<header id="hdr">
+  <div class="hdr-r1">
+    <div class="logo">
+      <div class="logo-mark">SMG<br>1</div>
+      <div class="logo-txt">
+        <div class="logo-name">Closing Report</div>
         <div class="logo-sub">Dashboard Operacional</div>
       </div>
     </div>
-
-    <!-- Meta fields -->
-    <div class="header-meta">
-      <div class="header-field-group">
-        <label>Data</label>
-        <input type="date" data-field="meta-data" />
-      </div>
-      <div class="header-field-group">
-        <label>Turno</label>
-        <select data-field="meta-turno">
-          <option value="">Selecionar</option>
-          <option value="AM1">AM1</option>
-          <option value="AM2">AM2</option>
-          <option value="PM1">PM1</option>
-          <option value="PM2">PM2</option>
-          <option value="N1">N1</option>
-          <option value="N2">N2</option>
-        </select>
-      </div>
-      <div class="header-field-group">
-        <label>Responsável</label>
-        <input type="text" data-field="meta-responsavel" placeholder="Nome do TL" style="min-width:120px;" />
-      </div>
+    <div class="hdr-meta">
+      <div class="meta-pill"><label>Data</label><input type="date" data-f="meta-data"/></div>
+      <div class="meta-pill"><label>Turno</label><select data-f="meta-turno"><option value="">—</option><option>AM1</option><option>AM2</option><option>PM1</option><option>PM2</option><option>N1</option><option>N2</option></select></div>
+      <div class="meta-pill"><label>Responsável</label><input type="text" data-f="meta-resp" placeholder="Nome do TL" style="min-width:120px"/></div>
     </div>
-
-    <!-- Action buttons -->
-    <div class="header-actions">
-      <button class="btn-hdr btn-hdr-red" id="btn-new">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-        Novo
-      </button>
-      <button class="btn-hdr btn-hdr-ghost" id="btn-save">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Salvar
-      </button>
-      <button class="btn-hdr btn-hdr-ghost" id="btn-load">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Carregar
-      </button>
-      <button class="btn-hdr btn-hdr-yellow" id="btn-copy-wa-hdr">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        WhatsApp
-      </button>
-      <button class="btn-hdr btn-hdr-ghost" id="btn-pdf">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        PDF
-      </button>
-      <button class="btn-hdr btn-hdr-ghost" id="btn-excel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        Excel
-      </button>
-      <button class="btn-hdr btn-hdr-ghost" id="btn-dark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        Escuro
-      </button>
-    </div>
-
-    <!-- Auto-save badge -->
-    <div class="save-indicator">
-      <div class="save-dot"></div>
-      <span id="save-time">Sincronizado</span>
-    </div>
-
+    <div class="hdr-save"><div class="save-dot"></div><span id="st">Sincronizado</span></div>
+  </div>
+  <div class="hdr-r2">
+    <button class="btn btn-del" id="btn-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Novo</button>
+    <button class="btn btn-ghost" id="btn-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Salvar</button>
+    <button class="btn btn-ghost" id="btn-load"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Carregar</button>
+    <div class="sep"></div>
+    <button class="btn btn-yellow" id="btn-wa-hdr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>WhatsApp</button>
+    <button class="btn btn-ghost" id="btn-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>PDF</button>
+    <button class="btn btn-ghost" id="btn-xls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9M15 21V9"/></svg>Excel</button>
+    <div class="sep"></div>
+    <button class="btn btn-ghost" id="btn-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Escuro</button>
   </div>
 </header>
 
-<!-- ============================================================
-     APP BODY — Main + Side
-     ============================================================ -->
-<div class="app-body">
+<div class="shell">
+<main class="main">
 
-  <!-- ── MAIN PANEL ── -->
-  <main class="main-panel">
+<div class="sec">📈 Performance Geral</div>
+<div class="card">
+  <div class="card-hd"><div class="c-ico ico-y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="c-title">Indicadores de Performance</span><span class="c-sub">Preencha os valores do fechamento</span></div>
+  <div class="card-bd">
+    <div class="g5">
+      <div class="fld"><label class="lbl">FAG AM (%)</label><input type="number" class="inp" data-f="fag" placeholder="72.44" step=".01" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">OOT Ciclo (%)</label><input type="number" class="inp" data-f="ootc" placeholder="96.9" step=".1" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">OOT Onda (%)</label><input type="number" class="inp" data-f="ooto" placeholder="92.8" step=".1" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">OOT Ciclo YMS (%)</label><input type="number" class="inp" data-f="ootcy" placeholder="64.6" step=".1" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">OOT Onda YMS (%)</label><input type="number" class="inp" data-f="ootoy" placeholder="65.5" step=".1" min="0" max="100"/></div>
+    </div>
+  </div>
+</div>
 
-    <!-- ─── 1. Performance Geral ─────────────────────────────── -->
-    <div class="section-label">📈 Performance Geral</div>
+<div class="kpis">
+  <div class="kpi" id="k-fag"><div class="kpi-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="kpi-lbl">Fechamento FAG</div><div class="kpi-val" id="kv-fag">—</div><span class="kpi-tag tg-n" id="kt-fag">Aguardando</span></div>
+  <div class="kpi" id="k-ootc"><div class="kpi-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="kpi-lbl">OOT Ciclo</div><div class="kpi-val" id="kv-ootc">—</div><div class="kpi-meta">Meta ≥ 95%</div></div>
+  <div class="kpi" id="k-ooto"><div class="kpi-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 20h20M5 20V10l7-7 7 7v10"/></svg></div><div class="kpi-lbl">OOT Onda</div><div class="kpi-val" id="kv-ooto">—</div><div class="kpi-meta">Meta ≥ 95%</div></div>
+  <div class="kpi" id="k-ootcy"><div class="kpi-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 12 2 2 4-4"/></svg></div><div class="kpi-lbl">OOT Ciclo YMS</div><div class="kpi-val" id="kv-ootcy">—</div><div class="kpi-meta">Meta ≥ 90%</div></div>
+  <div class="kpi" id="k-ootoy"><div class="kpi-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="kpi-lbl">OOT Onda YMS</div><div class="kpi-val" id="kv-ootoy">—</div><div class="kpi-meta">Meta ≥ 90%</div></div>
+</div>
 
-    <!-- Input Row -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon yellow">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <span class="card-title">Indicadores de Performance</span>
-        <span class="card-subtitle">Atualiza automaticamente</span>
+<div style="display:grid;grid-template-columns:280px 1fr;gap:13px;align-items:start">
+  <div class="card">
+    <div class="card-hd"><div class="c-ico ico-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><span class="c-title">FAG</span></div>
+    <div class="card-bd"><div class="ch" style="height:150px"><canvas id="ch-fag"></canvas><div class="ch-center"><div class="ch-cv" id="fag-cv">—</div><div class="ch-cl">FAG</div></div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="c-ico ico-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><span class="c-title">Totais Operacionais</span></div>
+    <div class="card-bd" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="fld"><label class="lbl">Total Planejado (rotas)</label><input type="number" class="inp" data-f="plan" placeholder="254" min="0"/></div>
+        <div class="fld"><label class="lbl">Delay (rotas)</label><input type="number" class="inp" data-f="del" placeholder="90" min="0"/></div>
+        <div class="fld"><label class="lbl">Pendentes (rotas)</label><input type="number" class="inp" data-f="pend" placeholder="7" min="0"/></div>
       </div>
-      <div class="card-body">
-        <div class="input-grid-3" style="gap:14px;">
-          <!-- FAG -->
-          <div class="field-group">
-            <label class="field-label">Fechamento FAG (%)</label>
-            <input type="number" class="field-input" data-field="fag-pct" placeholder="Ex: 72.44" step="0.01" min="0" max="100" />
-          </div>
-          <!-- OOT Ciclo -->
-          <div class="field-group">
-            <label class="field-label">OOT Ciclo (%)</label>
-            <input type="number" class="field-input" data-field="oot-ciclo" placeholder="Ex: 96.9" step="0.1" min="0" max="100" />
-          </div>
-          <!-- OOT Onda -->
-          <div class="field-group">
-            <label class="field-label">OOT Onda (%)</label>
-            <input type="number" class="field-input" data-field="oot-onda" placeholder="Ex: 92.8" step="0.1" min="0" max="100" />
-          </div>
-          <!-- OOT Ciclo YMS -->
-          <div class="field-group">
-            <label class="field-label">OOT Ciclo YMS (%)</label>
-            <input type="number" class="field-input" data-field="oot-ciclo-yms" placeholder="Ex: 64.6" step="0.1" min="0" max="100" />
-          </div>
-          <!-- OOT Onda YMS -->
-          <div class="field-group">
-            <label class="field-label">OOT Onda YMS (%)</label>
-            <input type="number" class="field-input" data-field="oot-onda-yms" placeholder="Ex: 65.5" step="0.1" min="0" max="100" />
-          </div>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:6px;justify-content:center">
+        <div class="sr"><span class="sr-l">Concluídas</span><span class="sr-r" id="c-real">—</span></div>
+        <div class="pg"><div class="pgf g" id="pg-real" style="width:0%"></div></div>
+        <div class="sr"><span class="sr-l">Taxa conclusão</span><span class="sr-r" id="c-rpct">—</span></div>
+        <div class="sr"><span class="sr-l">% Delay</span><span class="sr-r" id="c-dpct">—</span></div>
+        <div class="pg"><div class="pgf r" id="pg-del" style="width:0%"></div></div>
+        <div class="sr"><span class="sr-l">% Pendentes</span><span class="sr-r" id="c-ppct">—</span></div>
+        <div class="pg"><div class="pgf y" id="pg-pend" style="width:0%"></div></div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- KPI Cards Grid -->
-    <div class="kpi-grid">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+  <div class="kpi" id="k-plan"><div class="kpi-lbl">Planejadas</div><div class="kpi-val lg" id="kv-plan">—</div><div class="kpi-meta">rotas</div></div>
+  <div class="kpi" id="k-real"><div class="kpi-lbl">Concluídas</div><div class="kpi-val lg" id="kv-real">—</div><span class="kpi-tag tg-n" id="kt-real">—</span></div>
+  <div class="kpi" id="k-del"><div class="kpi-lbl">Delay</div><div class="kpi-val lg" id="kv-del">—</div><span class="kpi-tag tg-n" id="kt-del">—</span></div>
+  <div class="kpi" id="k-pend"><div class="kpi-lbl">Pendentes</div><div class="kpi-val lg" id="kv-pend">—</div><span class="kpi-tag tg-n" id="kt-pend">—</span></div>
+</div>
 
-      <!-- FAG -->
-      <div class="kpi-card status-gray" id="kpi-fag">
-        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <div class="kpi-label">Fechamento FAG</div>
-        <div class="kpi-value">—</div>
-        <span class="kpi-badge badge-gray">Aguardando</span>
-      </div>
+<div class="sec">🚚 Carros Atrasados por Onda</div>
+<div class="ondas">
+  <div class="onda" data-onda="o1"><div class="onda-hd"><span class="onda-name">1ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o1-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o1-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o1-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
+  <div class="onda" data-onda="o2"><div class="onda-hd"><span class="onda-name">2ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o2-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o2-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o2-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
+  <div class="onda" data-onda="o3"><div class="onda-hd"><span class="onda-name">3ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o3-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o3-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o3-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
+  <div class="onda" data-onda="o4"><div class="onda-hd"><span class="onda-name">4ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o4-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o4-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o4-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
+</div>
+<div class="onda-strip"><div class="strip-pill">Total delay: <b id="o-del-tot">0</b></div><div class="strip-pill">Total pendentes: <b id="o-pend-tot">0</b></div></div>
 
-      <!-- OOT Ciclo -->
-      <div class="kpi-card status-gray" id="kpi-oot-ciclo">
-        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <div class="kpi-label">OOT Ciclo</div>
-        <div class="kpi-value">—</div>
-        <div class="kpi-meta">Meta ≥ 95%</div>
-      </div>
+<div class="two">
+  <div class="card"><div class="card-hd"><div class="c-ico ico-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><span class="c-title">OOT por Onda</span></div><div class="card-bd"><div class="ch" style="height:200px"><canvas id="ch-oot"></canvas></div></div></div>
+  <div class="card"><div class="card-hd"><div class="c-ico ico-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="c-title">Delay e Pendentes por Onda</span></div><div class="card-bd"><div class="ch" style="height:200px"><canvas id="ch-delay"></canvas></div></div></div>
+</div>
 
-      <!-- OOT Onda -->
-      <div class="kpi-card status-gray" id="kpi-oot-onda">
-        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20h20M5 20V10l7-7 7 7v10"/></svg></div>
-        <div class="kpi-label">OOT Onda</div>
-        <div class="kpi-value">—</div>
-        <div class="kpi-meta">Meta ≥ 95%</div>
-      </div>
-
-      <!-- OOT Ciclo YMS -->
-      <div class="kpi-card status-gray" id="kpi-oot-ciclo-yms">
-        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 12 2 2 4-4"/></svg></div>
-        <div class="kpi-label">OOT Ciclo YMS</div>
-        <div class="kpi-value">—</div>
-        <div class="kpi-meta">Meta ≥ 90%</div>
-      </div>
-
-      <!-- OOT Onda YMS -->
-      <div class="kpi-card status-gray" id="kpi-oot-onda-yms">
-        <div class="kpi-icon-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        <div class="kpi-label">OOT Onda YMS</div>
-        <div class="kpi-value">—</div>
-        <div class="kpi-meta">Meta ≥ 90%</div>
-      </div>
-
-    </div>
-
-    <!-- FAG Donut -->
-    <div class="card" style="max-width:380px;">
-      <div class="card-header">
-        <div class="card-icon blue">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        </div>
-        <span class="card-title">Fechamento FAG</span>
-      </div>
-      <div class="card-body">
-        <div class="chart-wrap" style="height:160px;">
-          <canvas id="chart-fag"></canvas>
-          <div class="donut-center">
-            <div class="donut-center-value" id="fag-center-value">—</div>
-            <div class="donut-center-label">FAG</div>
-          </div>
-        </div>
+<div class="sec">🎒 Sacas Finalizadas antes das 07h</div>
+<div class="two">
+  <div class="card"><div class="card-hd"><div class="c-ico ico-y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><span class="c-title">Controle de Sacas</span></div>
+    <div class="card-bd" style="display:flex;flex-direction:column;gap:10px">
+      <div class="fld"><label class="lbl">Total de Sacas</label><input type="number" class="inp" data-f="sac-tot" placeholder="221" min="0"/></div>
+      <div class="fld"><label class="lbl">Sacas Já Fechadas</label><input type="number" class="inp" data-f="sac-fech" placeholder="184" min="0"/></div>
+      <div class="fld"><label class="lbl">Sacas para Auditar</label><input type="number" class="inp" data-f="sac-aud" placeholder="37" min="0"/></div>
+      <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:5px">
+        <div class="sr"><span class="sr-l">% Fechadas</span><span class="sr-r" id="s-fpct">—</span></div><div class="pg"><div class="pgf g" id="pg-sac" style="width:0%"></div></div>
+        <div class="sr"><span class="sr-l">Sacas Pendentes</span><span class="sr-r" id="s-pend">—</span></div>
+        <div class="sr"><span class="sr-l">% para Auditar</span><span class="sr-r" id="s-apct">—</span></div>
       </div>
     </div>
+  </div>
+  <div class="card"><div class="card-hd"><div class="c-ico ico-g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><span class="c-title">Distribuição de Sacas</span></div><div class="card-bd"><div class="ch" style="height:200px"><canvas id="ch-sacas"></canvas></div></div></div>
+</div>
 
-    <!-- ─── 2. Totais Operacionais ────────────────────────────── -->
-    <div class="section-label">📌 Totais Operacionais</div>
-
-    <div class="section-row">
-
-      <!-- Inputs -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          </div>
-          <span class="card-title">Dados de Entrada</span>
-        </div>
-        <div class="card-body" style="display:flex; flex-direction:column; gap:14px;">
-          <div class="field-group">
-            <label class="field-label">Total Planejado (rotas)</label>
-            <input type="number" class="field-input" data-field="total-planejado" placeholder="Ex: 254" min="0" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">Delay (rotas)</label>
-            <input type="number" class="field-input" data-field="delay-total" placeholder="Ex: 90" min="0" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">Pendentes (rotas)</label>
-            <input type="number" class="field-input" data-field="pendentes-total" placeholder="Ex: 7" min="0" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Resultados automáticos -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <span class="card-title">Resultado Automático</span>
-        </div>
-        <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
-          <div class="stat-row">
-            <span class="stat-row-label">Rotas Concluídas</span>
-            <span class="stat-row-value" id="calc-realizado">—</span>
-          </div>
-          <div class="progress-bar-wrap"><div class="progress-bar-fill fill-green" id="prog-realizado" style="width:0%"></div></div>
-          <div class="stat-row">
-            <span class="stat-row-label">Taxa de Conclusão</span>
-            <span class="stat-row-value" id="calc-realizado-pct">—</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-row-label">% Delay</span>
-            <span class="stat-row-value" id="calc-delay-pct">—</span>
-          </div>
-          <div class="progress-bar-wrap"><div class="progress-bar-fill fill-red" id="prog-delay" style="width:0%"></div></div>
-          <div class="stat-row">
-            <span class="stat-row-label">% Pendentes</span>
-            <span class="stat-row-value" id="calc-pendentes-pct">—</span>
-          </div>
-          <div class="progress-bar-wrap"><div class="progress-bar-fill fill-yellow" id="prog-pendentes" style="width:0%"></div></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- KPI row for totais -->
-    <div class="kpi-grid">
-      <div class="kpi-card status-gray" id="kpi-total">
-        <div class="kpi-label">Total Planejado</div>
-        <div class="kpi-value">—</div>
-        <div class="kpi-meta">rotas</div>
-      </div>
-      <div class="kpi-card status-gray" id="kpi-realizado">
-        <div class="kpi-label">Concluídas</div>
-        <div class="kpi-value">—</div>
-        <span class="kpi-badge badge-gray">—</span>
-      </div>
-      <div class="kpi-card status-gray" id="kpi-delay">
-        <div class="kpi-label">Delay</div>
-        <div class="kpi-value">—</div>
-        <span class="kpi-badge badge-gray">—</span>
-      </div>
-      <div class="kpi-card status-gray" id="kpi-pendentes">
-        <div class="kpi-label">Pendentes</div>
-        <div class="kpi-value">—</div>
-        <span class="kpi-badge badge-gray">—</span>
+<div class="sec">📦 Volume Processado</div>
+<div class="two">
+  <div class="card"><div class="card-hd"><div class="c-ico ico-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg></div><span class="c-title">Volume Processado</span></div>
+    <div class="card-bd" style="display:flex;flex-direction:column;gap:10px">
+      <div class="fld"><label class="lbl">Volume Total Processado</label><input type="number" class="inp" data-f="vol-tot" placeholder="32645" min="0"/></div>
+      <div class="fld"><label class="lbl">Backlog</label><input type="number" class="inp" data-f="vol-bl" placeholder="1914" min="0"/></div>
+      <div class="fld"><label class="lbl">Primeira Vez</label><input type="number" class="inp" data-f="vol-pv" placeholder="20731" min="0"/></div>
+      <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:5px">
+        <div class="sr"><span class="sr-l">% Primeira Vez</span><span class="sr-r" id="v-pvpct">—</span></div><div class="pg"><div class="pgf g" id="pg-pv" style="width:0%"></div></div>
+        <div class="sr"><span class="sr-l">% Backlog</span><span class="sr-r" id="v-blpct">—</span></div><div class="pg"><div class="pgf r" id="pg-bl" style="width:0%"></div></div>
       </div>
     </div>
+  </div>
+  <div class="card"><div class="card-hd"><div class="c-ico ico-g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div><span class="c-title">Distribuição de Volume</span></div><div class="card-bd"><div class="ch" style="height:200px"><canvas id="ch-vol"></canvas></div></div></div>
+</div>
 
-    <!-- ─── 3. Carros Atrasados (Ondas) ──────────────────────── -->
-    <div class="section-label">🚚 Carros Atrasados por Onda</div>
-
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon orange">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-        </div>
-        <span class="card-title">Ondas de Despacho</span>
-        <span class="card-subtitle">OOT calculado automaticamente</span>
-      </div>
-      <div class="card-body">
-        <div class="onda-table-wrap">
-          <table class="onda-table">
-            <thead>
-              <tr>
-                <th>Onda</th>
-                <th>Status</th>
-                <th>Pendentes</th>
-                <th>Delay</th>
-                <th>OOT %</th>
-                <th>OOT YMS %</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 1ª Onda -->
-              <tr data-onda-row="o1">
-                <td><span class="onda-label">1ª Onda</span></td>
-                <td><span class="onda-badge badge-gray">—</span></td>
-                <td><input type="number" data-field="o1-pendentes" placeholder="0" min="0" /></td>
-                <td><input type="number" data-field="o1-delay" placeholder="0" min="0" /></td>
-                <td><span class="oot-value" data-oot="o1">—</span></td>
-                <td><input type="number" data-field="o1-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o1"></span></td>
-              </tr>
-              <!-- 2ª Onda -->
-              <tr data-onda-row="o2">
-                <td><span class="onda-label">2ª Onda</span></td>
-                <td><span class="onda-badge badge-gray">—</span></td>
-                <td><input type="number" data-field="o2-pendentes" placeholder="0" min="0" /></td>
-                <td><input type="number" data-field="o2-delay" placeholder="0" min="0" /></td>
-                <td><span class="oot-value" data-oot="o2">—</span></td>
-                <td><input type="number" data-field="o2-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o2"></span></td>
-              </tr>
-              <!-- 3ª Onda -->
-              <tr data-onda-row="o3">
-                <td><span class="onda-label">3ª Onda</span></td>
-                <td><span class="onda-badge badge-gray">—</span></td>
-                <td><input type="number" data-field="o3-pendentes" placeholder="0" min="0" /></td>
-                <td><input type="number" data-field="o3-delay" placeholder="0" min="0" /></td>
-                <td><span class="oot-value" data-oot="o3">—</span></td>
-                <td><input type="number" data-field="o3-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o3"></span></td>
-              </tr>
-              <!-- 4ª Onda -->
-              <tr data-onda-row="o4">
-                <td><span class="onda-label">4ª Onda</span></td>
-                <td><span class="onda-badge badge-gray">—</span></td>
-                <td><input type="number" data-field="o4-pendentes" placeholder="0" min="0" /></td>
-                <td><input type="number" data-field="o4-delay" placeholder="0" min="0" /></td>
-                <td><span class="oot-value" data-oot="o4">—</span></td>
-                <td><input type="number" data-field="o4-oot-yms" placeholder="0.0" step="0.1" min="0" max="100" style="width:72px;" /><span class="oot-value ms-1" data-ootyms="o4"></span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Summary chips -->
-        <div class="onda-summary-strip">
-          <div class="onda-summary-chip">Total: <span id="onda-sum-total">0</span></div>
-          <div class="onda-summary-chip">Delay: <span id="onda-sum-delay">0</span></div>
-          <div class="onda-summary-chip">Pendentes: <span id="onda-sum-pend">0</span></div>
-        </div>
+<div class="sec">📦 Volumosos</div>
+<div class="two">
+  <div class="card"><div class="card-hd"><div class="c-ico ico-o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><span class="c-title">Volumosos</span></div>
+    <div class="card-bd" style="display:flex;flex-direction:column;gap:10px">
+      <div class="fld"><label class="lbl">One Bipe</label><input type="number" class="inp" data-f="vol-ob" placeholder="1092" min="0"/></div>
+      <div class="fld"><label class="lbl">Em Rota</label><input type="number" class="inp" data-f="vol-er" placeholder="200" min="0"/></div>
+      <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:5px">
+        <div class="sr"><span class="sr-l">Total Volumosos</span><span class="sr-r" id="v-vtot">—</span></div>
+        <div class="sr"><span class="sr-l">% Em Rota</span><span class="sr-r" id="v-erpct">—</span></div><div class="pg"><div class="pgf b" id="pg-er" style="width:0%"></div></div>
       </div>
     </div>
+  </div>
+  <div class="card"><div class="card-hd"><div class="c-ico ico-o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div><span class="c-title">Distribuição Volumosos</span></div><div class="card-bd"><div class="ch" style="height:200px"><canvas id="ch-vol2"></canvas></div></div></div>
+</div>
 
-    <!-- Onda Charts -->
-    <div class="charts-row">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
-          <span class="card-title">OOT por Onda</span>
-        </div>
-        <div class="card-body">
-          <div class="chart-wrap tall"><canvas id="chart-oot"></canvas></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <span class="card-title">Delay e Pendentes por Onda</span>
-        </div>
-        <div class="card-body">
-          <div class="chart-wrap tall"><canvas id="chart-delay"></canvas></div>
-        </div>
-      </div>
-    </div>
+<div class="sec">📝 Observações</div>
+<div class="card"><div class="card-hd"><div class="c-ico ico-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><span class="c-title">Observações do Turno</span><span class="c-sub">Incluído no relatório</span></div><div class="card-bd"><textarea class="ta" data-f="obs" placeholder="Descreva ocorrências ou informações relevantes do turno..."></textarea></div></div>
 
-    <!-- ─── 4. Sacas ──────────────────────────────────────────── -->
-    <div class="section-label">🎒 Sacas</div>
+</main>
 
-    <div class="section-row">
+<aside class="side">
+  <div class="side-hd">
+    <div class="side-title"><div class="wa-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg></div>Prévia WhatsApp</div>
+    <span class="live">● Ao vivo</span>
+  </div>
+  <div class="wa-scroll"><div class="wa-bubble" id="wa-out">Preencha os campos para gerar o relatório...</div></div>
+  <div class="side-ft">
+    <button class="btn-wa" id="btn-wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>Copiar para WhatsApp</button>
+  </div>
+</aside>
+</div>
 
-      <!-- Inputs Sacas -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon yellow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          </div>
-          <span class="card-title">Controle de Sacas</span>
-        </div>
-        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
-          <div class="field-group">
-            <label class="field-label">Total de Sacas</label>
-            <input type="number" class="field-input" data-field="sacas-total" placeholder="Ex: 221" min="0" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">Sacas Fechadas</label>
-            <input type="number" class="field-input" data-field="sacas-fechadas" placeholder="Ex: 184" min="0" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">Sacas para Auditar</label>
-            <input type="number" class="field-input" data-field="sacas-auditar" placeholder="Ex: 37" min="0" />
-          </div>
-
-          <!-- Results -->
-          <div style="padding-top:8px;border-top:1px solid var(--border);">
-            <div class="stat-row">
-              <span class="stat-row-label">% Fechadas</span>
-              <span class="stat-row-value" id="calc-sacas-pct">—</span>
-            </div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-green" id="prog-sacas" style="width:0%"></div></div>
-            <div class="stat-row">
-              <span class="stat-row-label">Pendentes</span>
-              <span class="stat-row-value" data-calc="sacas-pendentes">—</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-row-label">% para Auditar</span>
-              <span class="stat-row-value" id="calc-sacas-auditar-pct">—</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Donut Sacas -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-          </div>
-          <span class="card-title">Distribuição de Sacas</span>
-        </div>
-        <div class="card-body">
-          <div class="chart-wrap" style="height:200px;"><canvas id="chart-sacas"></canvas></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ─── 5. Volume ─────────────────────────────────────────── -->
-    <div class="section-label">📦 Volume Processado</div>
-
-    <div class="section-row">
-      <!-- Inputs Volume -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
-          </div>
-          <span class="card-title">Volume Processado</span>
-        </div>
-        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
-          <div class="field-group">
-            <label class="field-label">Volume Total Processado</label>
-            <input type="number" class="field-input" data-field="vol-total" placeholder="Ex: 32645" min="0" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">Backlog</label>
-            <input type="number" class="field-input" data-field="vol-backlog" placeholder="Ex: 1914" min="0" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">Primeira Vez</label>
-            <input type="number" class="field-input" data-field="vol-pv" placeholder="Ex: 20731" min="0" />
-          </div>
-
-          <!-- Results -->
-          <div style="padding-top:8px;border-top:1px solid var(--border);">
-            <div class="stat-row">
-              <span class="stat-row-label">% Primeira Vez</span>
-              <span class="stat-row-value" id="calc-vol-pv-pct">—</span>
-            </div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-green" id="prog-vol-pv" style="width:0%"></div></div>
-            <div class="stat-row">
-              <span class="stat-row-label">% Backlog</span>
-              <span class="stat-row-value" id="calc-vol-backlog-pct">—</span>
-            </div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-red" id="prog-vol-backlog" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Chart Volume -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-          </div>
-          <span class="card-title">Distribuição de Volume</span>
-        </div>
-        <div class="card-body">
-          <div class="chart-wrap" style="height:200px;"><canvas id="chart-vol"></canvas></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── 6. Volumosos ──────────────────────────────────────── -->
-    <div class="section-label">📦 Volumosos</div>
-
-    <div class="section-row">
-      <!-- Inputs -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon orange">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          </div>
-          <span class="card-title">Volumosos</span>
-        </div>
-        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
-          <div class="field-group">
-            <label class="field-label">One Bipe</label>
-            <input type="number" class="field-input" data-field="vol-onebipe" placeholder="Ex: 1092" min="0" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">Em Rota</label>
-            <input type="number" class="field-input" data-field="vol-emrota" placeholder="Ex: 200" min="0" />
-          </div>
-          <!-- Auto -->
-          <div style="padding-top:8px;border-top:1px solid var(--border);">
-            <div class="stat-row">
-              <span class="stat-row-label">Total Volumosos</span>
-              <span class="stat-row-value" id="calc-vol-total-vol">—</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-row-label">% Em Rota</span>
-              <span class="stat-row-value" id="calc-vol-emrota-pct">—</span>
-            </div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill fill-blue" id="prog-vol-vol" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Chart Volumosos -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon orange">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
-          </div>
-          <span class="card-title">Distribuição Volumosos</span>
-        </div>
-        <div class="card-body">
-          <div class="chart-wrap" style="height:200px;"><canvas id="chart-vol2"></canvas></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── 7. Observações ────────────────────────────────────── -->
-    <div class="section-label">📝 Observações</div>
-
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon gray" style="background:var(--gray-100);color:var(--text-muted);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </div>
-        <span class="card-title">Observações do Turno</span>
-        <span class="card-subtitle">Incluído automaticamente no relatório WhatsApp</span>
-      </div>
-      <div class="card-body">
-        <textarea class="obs-textarea" data-field="observacoes" placeholder="Descreva ocorrências, intercorrências ou informações relevantes do turno..."></textarea>
-      </div>
-    </div>
-
-  </main><!-- /main-panel -->
-
-  <!-- ── SIDE PANEL — WhatsApp Preview ── -->
-  <aside class="side-panel">
-    <div class="side-header">
-      <div class="side-title">
-        <div class="side-title-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-        </div>
-        Prévia WhatsApp
-      </div>
-      <span class="side-live-badge">● AO VIVO</span>
-    </div>
-
-    <div class="wa-preview-area">
-      <div class="wa-bubble" id="wa-preview">
-        Preencha os campos ao lado para gerar o relatório automaticamente...
-      </div>
-    </div>
-
-    <div class="side-footer">
-      <button class="btn-copy-wa" id="btn-copy-wa">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-        Copiar para WhatsApp
-      </button>
-    </div>
-  </aside>
-
-</div><!-- /app-body -->
-
-<!-- ── Toast ── -->
 <div id="toast"></div>
 
-<!-- ── Scripts ── -->
-<script src="js/storage.js"></script>
-<script src="js/export.js"></script>
-<script src="js/app.js"></script>
+<script>
+/* ── helpers ── */
+const $=id=>document.getElementById(id);
+const Q=s=>document.querySelector(s);
+const QA=s=>document.querySelectorAll(s);
+const F=k=>parseFloat(Q(`[data-f="${k}"]`)?.value)||0;
+const V=k=>Q(`[data-f="${k}"]`)?.value||'';
+const SET=(id,v)=>{const e=$(id);if(e)e.textContent=v};
+const PCT=(a,b)=>b>0?((a/b)*100).toFixed(1)+'%':'—';
+const PCTN=(a,b)=>b>0?Math.min(100,Math.max(0,(a/b)*100)):0;
+const CLAMP=(v,l,h)=>Math.min(h,Math.max(l,v));
+function stCls(v,hi,lo){return v>=hi?'ok':v>=lo?'warn':'bad'}
+function tagCls(s){return s==='ok'?'tg-ok':s==='warn'?'tg-warn':s==='bad'?'tg-bad':'tg-n'}
+function tagTxt(s){return s==='ok'?'✓ Meta':s==='warn'?'⚠ Atenção':'✗ Abaixo'}
+function setKPI(id,val,cls,tag,meta){
+  const el=$(id);if(!el)return;
+  el.className='kpi'+(cls?' '+cls:'');
+  const v=el.querySelector('.kpi-val');if(v)v.textContent=val;
+  const t=el.querySelector('.kpi-tag');if(t&&tag!==undefined){t.className='kpi-tag '+tagCls(cls);t.textContent=tag}
+  const m=el.querySelector('.kpi-meta');if(m&&meta!==undefined)m.textContent=meta;
+}
+function setPg(id,pct,cls){const e=$(id);if(!e)return;e.style.width=CLAMP(pct,0,100)+'%';e.className='pgf '+cls}
 
+/* ── charts ── */
+let chFAG,chSacas,chOOT,chDelay,chVol,chVol2;
+const GY='rgba(200,207,220,.45)',GP='#00A650',RP='#E02020',BP='#3D4DB7',OP='#FF7500',YP='#C8A800';
+function mkDonut(id,labels,colors){
+  const ctx=document.getElementById(id)?.getContext('2d');if(!ctx)return null;
+  return new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data:labels.map(()=>0),backgroundColor:colors,borderWidth:0,hoverOffset:4}]},
+    options:{cutout:'70%',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:labels.length>1,position:'bottom',labels:{boxWidth:8,font:{size:10},padding:8}},
+        tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}}}});
+}
+function mkBar(id,labels,dsets){
+  const ctx=document.getElementById(id)?.getContext('2d');if(!ctx)return null;
+  return new Chart(ctx,{type:'bar',data:{labels,datasets:dsets.map(d=>({...d,borderRadius:5,barPercentage:.5}))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:8,font:{size:10},padding:8}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10}}}}}});
+}
+function upd(ch,...ds){if(!ch)return;ds.forEach((d,i)=>{if(ch.data.datasets[i])ch.data.datasets[i].data=d});ch.update('none')}
+function initCharts(){
+  chFAG=mkDonut('ch-fag',['FAG','Restante'],[GP,GY]);
+  chSacas=mkDonut('ch-sacas',['Fechadas','Auditar','Pendentes'],[GP,OP,RP]);
+  chVol=mkDonut('ch-vol',['Primeira Vez','Backlog','Outros'],[GP,RP,GY]);
+  chVol2=mkDonut('ch-vol2',['One Bipe','Em Rota'],[BP,OP]);
+  chOOT=mkBar('ch-oot',['1ª','2ª','3ª','4ª'],[{label:'OOT %',data:[0,0,0,0],backgroundColor:BP},{label:'OOT YMS %',data:[0,0,0,0],backgroundColor:YP}]);
+  chDelay=mkBar('ch-delay',['1ª','2ª','3ª','4ª'],[{label:'Delay',data:[0,0,0,0],backgroundColor:RP},{label:'Pendentes',data:[0,0,0,0],backgroundColor:OP}]);
+  if(chFAG){chFAG.options.cutout='72%';chFAG.update()}
+}
+
+/* ── calcs ── */
+function calcAll(){calcPerf();calcTotais();calcOndas();calcSacas();calcVol();calcVolumos();genWA()}
+function calcPerf(){
+  const fag=F('fag'),c=F('ootc'),o=F('ooto'),cy=F('ootcy'),oy=F('ootoy');
+  const sf=fag>0?stCls(fag,70,70):'';
+  setKPI('k-fag',fag>0?fag.toFixed(2)+'%':'—',sf,fag>0?tagTxt(sf):undefined);
+  const fcv=$('fag-cv');if(fcv)fcv.textContent=fag>0?fag.toFixed(1)+'%':'—';
+  const fv=CLAMP(fag,0,100),fc=sf==='ok'?GP:sf==='warn'?YP:sf==='bad'?RP:GY;
+  upd(chFAG,[fv,100-fv]);if(chFAG){chFAG.data.datasets[0].backgroundColor=[fc,GY];chFAG.update('none')}
+  function kpi(id,v,hi,lo){const s=v>0?stCls(v,hi,lo):'';setKPI(id,v>0?v.toFixed(1)+'%':'—',s)}
+  kpi('k-ootc',c,95,85);kpi('k-ooto',o,95,85);kpi('k-ootcy',cy,90,70);kpi('k-ootoy',oy,90,70);
+  SET('kv-fag',fag>0?fag.toFixed(2)+'%':'—');SET('kv-ootc',c>0?c.toFixed(1)+'%':'—');
+  SET('kv-ooto',o>0?o.toFixed(1)+'%':'—');SET('kv-ootcy',cy>0?cy.toFixed(1)+'%':'—');SET('kv-ootoy',oy>0?oy.toFixed(1)+'%':'—');
+}
+function calcTotais(){
+  const plan=F('plan'),del=F('del'),pend=F('pend');
+  const real=Math.max(0,plan-del-pend);
+  const prp=PCTN(real,plan),pdp=PCTN(del,plan),ppp=PCTN(pend,plan);
+  SET('c-real',real||'—');SET('c-rpct',PCT(real,plan));SET('c-dpct',PCT(del,plan));SET('c-ppct',PCT(pend,plan));
+  setPg('pg-real',prp,'g');setPg('pg-del',pdp,'r');setPg('pg-pend',ppp,'y');
+  const sr=plan>0?stCls(prp,90,75):'';
+  $('k-plan').className='kpi';SET('kv-plan',plan||'—');
+  setKPI('k-real',real||'—',sr,plan>0?PCT(real,plan):undefined);
+  setKPI('k-del',del||'—',del>0?'bad':'',del>0?PCT(del,plan):undefined);
+  setKPI('k-pend',pend||'—',pend>0?'warn':'',pend>0?'Pendente':'OK');
+  const st=(id,v,cls)=>{const e=$(id);if(e){e.className='kpi-tag '+tagCls(cls);e.textContent=v}};
+  if(plan>0){st('kt-real',PCT(real,plan),sr);st('kt-del',PCT(del,plan),del>0?'bad':'ok');st('kt-pend',pend>0?'Pendente':'OK',pend>0?'warn':'ok')}
+}
+function calcOndas(){
+  let totD=0,totP=0;const ootD=[],ymsD=[],delD=[],pendD=[];
+  ['o1','o2','o3','o4'].forEach(p=>{
+    const d=F(`${p}-del`),pe=F(`${p}-pend`),y=F(`${p}-yms`),tot=d+pe;
+    const oot=tot>0?Math.max(0,(1-d/tot)*100):0;
+    const ootStr=tot>0?oot.toFixed(1)+'%':'—',yStr=y>0?y.toFixed(1)+'%':'—';
+    const card=Q(`[data-onda="${p}"]`);
+    if(card){
+      const badge=card.querySelector('.onda-badge');
+      if(badge){if(!tot){badge.className='onda-badge ob-n';badge.textContent='—'}
+        else if(pe>0){badge.className='onda-badge ob-bad';badge.textContent=pe+' pend.'}
+        else if(oot<85){badge.className='onda-badge ob-warn';badge.textContent=d+' delay'}
+        else{badge.className='onda-badge ob-ok';badge.textContent='OK'}}
+      const oe=card.querySelector('.o-oot');
+      if(oe){oe.textContent=ootStr;const sc=tot>0?stCls(oot,90,75):'';oe.className='os-val o-oot'+(sc==='ok'?' c-ok':sc==='warn'?' c-warn':sc==='bad'?' c-bad':'')}
+      const ye=card.querySelector('.o-yms');
+      if(ye){ye.textContent=yStr;const sy=y>0?stCls(y,90,70):'';ye.className='os-val o-yms'+(sy==='ok'?' c-ok':sy==='warn'?' c-warn':sy==='bad'?' c-bad':'')}
+    }
+    totD+=d;totP+=pe;ootD.push(tot>0?oot:0);ymsD.push(y);delD.push(d);pendD.push(pe);
+  });
+  SET('o-del-tot',totD);SET('o-pend-tot',totP);upd(chOOT,ootD,ymsD);upd(chDelay,delD,pendD);
+}
+function calcSacas(){
+  const tot=F('sac-tot'),f=F('sac-fech'),a=F('sac-aud'),pend=Math.max(0,tot-f-a);
+  SET('s-fpct',PCT(f,tot));SET('s-pend',pend||'—');SET('s-apct',PCT(a,tot));
+  setPg('pg-sac',PCTN(f,tot),'g');upd(chSacas,[f,a,pend]);
+}
+function calcVol(){
+  const tot=F('vol-tot'),bl=F('vol-bl'),pv=F('vol-pv');
+  SET('v-pvpct',PCT(pv,tot));SET('v-blpct',PCT(bl,tot));
+  setPg('pg-pv',PCTN(pv,tot),'g');setPg('pg-bl',PCTN(bl,tot),'r');
+  upd(chVol,[pv,bl,Math.max(0,tot-bl-pv)]);
+}
+function calcVolumos(){
+  const ob=F('vol-ob'),er=F('vol-er');
+  SET('v-vtot',ob+er||'—');SET('v-erpct',PCT(er,ob+er));
+  setPg('pg-er',PCTN(er,ob+er),'b');upd(chVol2,[ob,er]);
+}
+
+/* ── WhatsApp ── */
+const fmtN=v=>v?v.toLocaleString('pt-BR'):'—';
+function genWA(){
+  const turno=V('meta-turno')||'AM1',d=V('meta-data');
+  const dt=d?new Date(d+'T12:00').toLocaleDateString('pt-BR'):new Date().toLocaleDateString('pt-BR');
+  const plan=F('plan'),del=F('del'),pend=F('pend'),real=Math.max(0,plan-del-pend);
+  const ondas=['o1','o2','o3','o4'].map((p,i)=>{
+    const pd=F(`${p}-pend`),dl=F(`${p}-del`),y=F(`${p}-yms`),tot=pd+dl;
+    return `• ${i+1}ª Onda: ${pd} pendente${pd!==1?'s':''} | ${dl} delay | OOT ${tot>0?(Math.max(0,(1-dl/tot)*100)).toFixed(1)+'%':'—'} | OOT YMS ${y>0?y.toFixed(1)+'%':'—'}`;
+  }).join('\n');
+  const st=F('sac-tot'),sf=F('sac-fech'),sa=F('sac-aud'),obs=V('obs');
+  const msg=`📊 *Relatório ${turno} — ${dt}*\n\n📈 *Performance Geral*\n• Fechamento FAG ${turno}: ${V('fag')||'—'}%\n• OOT Ciclo: ${V('ootc')||'—'}%\n• OOT Onda: ${V('ooto')||'—'}%\n• OOT Ciclo YMS: ${V('ootcy')||'—'}%\n• OOT Onda YMS: ${V('ootoy')||'—'}%\n\n📌 *Totais Operacionais*\n• Total planejado: ${plan||'—'} rotas\n• Realizadas: ${real} (${PCT(real,plan)})\n• Delay: ${del} rotas\n• Pendentes: ${pend} rotas\n\n🚚 *Carros Atrasados*\n${ondas}\n\n🎒 *Sacas finalizadas antes das 07h*\n• Total de sacas: ${st||'—'}\n• Sacas já fechadas: ${sf} (${PCT(sf,st)})\n• Sacas para auditar: ${sa}\n• Sacas pendentes: ${Math.max(0,st-sf-sa)}\n\n📦 *Volume Processado*\n• Volume total processado: ${fmtN(F('vol-tot'))}\n• Backlog: ${fmtN(F('vol-bl'))}\n• Primeira vez: ${fmtN(F('vol-pv'))}\n\n📦 *Volumosos*\n• One Bipe: ${fmtN(F('vol-ob'))}\n• Em Rota: ${fmtN(F('vol-er'))}${obs?'\n\n📝 *Observações*\n'+obs:''}`;
+  const el=$('wa-out');if(el)el.textContent=msg;return msg;
+}
+
+/* ── PDF — abre nova janela com layout estático ── */
+function makeSVGDonut(value,total,color,size=120){
+  if(!total||!value)return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${size/2-8}" fill="none" stroke="#E0E5EF" stroke-width="14"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="#8590AD">—</text></svg>`;
+  const r=size/2-8,cx=size/2,cy=size/2,circ=2*Math.PI*r;
+  const pct=Math.min(value/total,1),dash=pct*circ,gap=circ-dash;
+  return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E0E5EF" stroke-width="14"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="14" stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-dashoffset="${circ/4}" stroke-linecap="round"/><text x="50%" y="48%" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="17" font-weight="800" fill="#1A1D2B">${(pct*100).toFixed(1)}%</text><text x="50%" y="62%" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="700" fill="#8590AD" text-transform="uppercase" letter-spacing="0.5">de ${total.toLocaleString('pt-BR')}</text></svg>`;
+}
+
+function makeSVGBar(values,labels,colors,w=360,h=140){
+  const max=Math.max(...values,1),barW=36,gap=28,padL=28,padB=24,padT=10,chartH=h-padB-padT;
+  let bars='',texts='';
+  values.forEach((v,i)=>{
+    const x=padL+i*(barW+gap),bh=Math.max(2,(v/max)*chartH),y=padT+chartH-bh;
+    bars+=`<rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="4" fill="${colors[i%colors.length]}"/><text x="${x+barW/2}" y="${y-4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="700" fill="#1A1D2B">${v>0?v:''}</text>`;
+    texts+=`<text x="${x+barW/2}" y="${h-4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8590AD">${labels[i]}</text>`;
+  });
+  return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="${padL-4}" y1="${padT}" x2="${padL-4}" y2="${padT+chartH}" stroke="#E0E5EF" stroke-width="1"/><line x1="${padL-4}" y1="${padT+chartH}" x2="${w}" y2="${padT+chartH}" stroke="#E0E5EF" stroke-width="1"/>${bars}${texts}</svg>`;
+}
+
+function makeSVGGroupBar(v1,v2,labels,c1,c2,w=360,h=140){
+  const max=Math.max(...v1,...v2,1),bW=18,gap=16,grpGap=10,padL=28,padB=24,padT=10,chartH=h-padB-padT;
+  let bars='',txts='';
+  labels.forEach((lbl,i)=>{
+    const gx=padL+i*(bW*2+grpGap+gap);
+    const b1h=Math.max(2,(v1[i]/max)*chartH),b2h=Math.max(2,(v2[i]/max)*chartH);
+    const y1=padT+chartH-b1h,y2=padT+chartH-b2h;
+    bars+=`<rect x="${gx}" y="${y1}" width="${bW}" height="${b1h}" rx="3" fill="${c1}"/>`;
+    bars+=`<rect x="${gx+bW+2}" y="${y2}" width="${bW}" height="${b2h}" rx="3" fill="${c2}"/>`;
+    if(v1[i]>0)bars+=`<text x="${gx+bW/2}" y="${y1-4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="700" fill="#1A1D2B">${v1[i].toFixed(0)}</text>`;
+    if(v2[i]>0)bars+=`<text x="${gx+bW*1.5+2}" y="${y2-4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="700" fill="#1A1D2B">${v2[i].toFixed(0)}</text>`;
+    txts+=`<text x="${gx+bW}" y="${h-4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8590AD">${lbl}</text>`;
+  });
+  return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="${padL-4}" y1="${padT}" x2="${padL-4}" y2="${padT+chartH}" stroke="#E0E5EF" stroke-width="1"/><line x1="${padL-4}" y1="${padT+chartH}" x2="${w}" y2="${padT+chartH}" stroke="#E0E5EF" stroke-width="1"/>${bars}${txts}</svg>`;
+}
+
+function kpiColor(st){return st==='ok'?'#00A650':st==='warn'?'#C8A800':st==='bad'?'#E02020':'#8590AD'}
+function kpiBar(st){return st==='ok'?'#00A650':st==='warn'?'#C8A800':st==='bad'?'#E02020':'#E0E5EF'}
+
+function buildPDF(){
+  const plan=F('plan'),del=F('del'),pend=F('pend'),real=Math.max(0,plan-del-pend);
+  const fag=F('fag'),ootc=F('ootc'),ooto=F('ooto'),ootcy=F('ootcy'),ootoy=F('ootoy');
+  const stf=fag>0?stCls(fag,70,70):'n',stc=ootc>0?stCls(ootc,95,85):'n';
+  const sto=ooto>0?stCls(ooto,95,85):'n',stcy=ootcy>0?stCls(ootcy,90,70):'n',stoy=ootoy>0?stCls(ootoy,90,70):'n';
+  const prp=PCTN(real,plan),pdp=PCTN(del,plan),ppp=PCTN(pend,plan);
+  const stReal=plan>0?stCls(prp,90,75):'n';
+  const sacTot=F('sac-tot'),sacFech=F('sac-fech'),sacAud=F('sac-aud'),sacPend=Math.max(0,sacTot-sacFech-sacAud);
+  const volTot=F('vol-tot'),volBl=F('vol-bl'),volPv=F('vol-pv');
+  const ob=F('vol-ob'),er=F('vol-er');
+  const turno=V('meta-turno')||'AM1';
+  const dataStr=V('meta-data')?new Date(V('meta-data')+'T12:00').toLocaleDateString('pt-BR'):new Date().toLocaleDateString('pt-BR');
+  const resp=V('meta-resp')||'—';
+  const obs=V('obs');
+
+  // Ondas
+  const ondaData=['o1','o2','o3','o4'].map((p,i)=>{
+    const d=F(`${p}-del`),pe=F(`${p}-pend`),y=F(`${p}-yms`),tot=d+pe;
+    const oot=tot>0?Math.max(0,(1-d/tot)*100):0;
+    const ootSt=tot>0?stCls(oot,90,75):'n';
+    const ymsSt=y>0?stCls(y,90,70):'n';
+    return{d,pe,y,tot,oot,ootStr:tot>0?oot.toFixed(1)+'%':'—',yStr:y>0?y.toFixed(1)+'%':'—',ootSt,ymsSt,label:`${i+1}ª Onda`};
+  });
+
+  // SVG charts
+  const fagSVG=makeSVGDonut(fag,100,kpiColor(stf),130);
+  const sacSVG=makeSVGDonut(sacFech,sacTot,'#00A650',130);
+  const volSVG=makeSVGDonut(volPv,volTot,'#00A650',130);
+  const vol2SVG=makeSVGDonut(ob,ob+er,'#3D4DB7',130);
+  const ootSVG=makeSVGGroupBar(ondaData.map(o=>o.oot),ondaData.map(o=>o.y),['1ª','2ª','3ª','4ª'],'#3D4DB7','#C8A800',340,130);
+  const delaySVG=makeSVGGroupBar(ondaData.map(o=>o.d),ondaData.map(o=>o.pe),['1ª','2ª','3ª','4ª'],'#E02020','#FF7500',340,130);
+
+  function progBar(pct,color){
+    const w=Math.min(100,Math.max(0,pct));
+    return`<div style="height:5px;background:#E0E5EF;border-radius:99px;overflow:hidden;margin:3px 0 6px"><div style="height:100%;width:${w}%;background:${color};border-radius:99px"></div></div>`;
+  }
+  function kpiCard(lbl,val,st,sub){
+    const c=kpiColor(st),bar=kpiBar(st);
+    const tagMap={ok:'✓ Meta',warn:'⚠ Atenção',bad:'✗ Abaixo',n:''};
+    const bgMap={ok:'#E5F7EE',warn:'#FFFBE0',bad:'#FDEAEA',n:'#F1F3F9'};
+    const tcMap={ok:'#00A650',warn:'#8A6A00',bad:'#E02020',n:'#8590AD'};
+    return`<div style="background:#fff;border:1px solid #E0E5EF;border-radius:10px;padding:12px 13px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${bar};border-radius:10px 10px 0 0"></div>
+      <div style="font-size:9px;font-weight:700;color:#8590AD;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">${lbl}</div>
+      <div style="font-size:22px;font-weight:800;color:#1A1D2B;line-height:1;letter-spacing:-.5px;margin-bottom:5px">${val}</div>
+      ${tagMap[st]?`<span style="display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;background:${bgMap[st]};color:${tcMap[st]}">${tagMap[st]}</span>`:''}
+      ${sub?`<div style="font-size:10px;color:#8590AD;margin-top:3px">${sub}</div>`:''}
+    </div>`;
+  }
+  function ondaCard(o,i){
+    const hdrBg='#1A1F71';
+    const badgeMap={ok:`background:#00A650;color:#fff`,warn:`background:#FFE600;color:#1A1F71`,bad:`background:#E02020;color:#fff`,n:`background:rgba(255,255,255,.15);color:rgba(255,255,255,.65)`};
+    const badgeTxt=o.tot===0?'—':o.pe>0?`${o.pe} pend.`:o.oot<85?`${o.d} delay`:'OK';
+    const badgeSt=o.tot===0?'n':o.pe>0?'bad':o.oot<85?'warn':'ok';
+    const cOot=kpiColor(o.ootSt),cYms=kpiColor(o.ymsSt);
+    return`<div style="background:#fff;border:1px solid #E0E5EF;border-radius:10px;overflow:hidden">
+      <div style="background:${hdrBg};padding:7px 10px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:12px;font-weight:700;color:#fff">${o.label}</span>
+        <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;${badgeMap[badgeSt]}">${badgeTxt}</span>
+      </div>
+      <div style="padding:10px 11px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><div style="font-size:9px;font-weight:700;color:#8590AD;text-transform:uppercase;margin-bottom:2px">Pendentes</div><div style="font-size:16px;font-weight:800;color:#1A1D2B">${o.pe}</div></div>
+          <div><div style="font-size:9px;font-weight:700;color:#8590AD;text-transform:uppercase;margin-bottom:2px">Delay</div><div style="font-size:16px;font-weight:800;color:#1A1D2B">${o.d}</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+          <div style="background:#F1F3F9;border:1px solid #E0E5EF;border-radius:6px;padding:5px 6px;text-align:center">
+            <div style="font-size:14px;font-weight:800;color:${cOot}">${o.ootStr}</div>
+            <div style="font-size:8px;font-weight:700;color:#8590AD;text-transform:uppercase;margin-top:1px">OOT %</div>
+          </div>
+          <div style="background:#F1F3F9;border:1px solid #E0E5EF;border-radius:6px;padding:5px 6px;text-align:center">
+            <div style="font-size:14px;font-weight:800;color:${cYms}">${o.yStr}</div>
+            <div style="font-size:8px;font-weight:700;color:#8590AD;text-transform:uppercase;margin-top:1px">YMS %</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/>
+<title>SMG1 Closing Report — ${turno} ${dataStr}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#F1F3F9;color:#1A1D2B;font-size:13px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{max-width:1100px;margin:0 auto;padding:20px 24px 40px}
+.hdr{background:#1A1F71;border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.hdr-mark{width:40px;height:40px;background:#FFE600;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#1A1F71;line-height:1.1;flex-shrink:0}
+.hdr-name{font-size:16px;font-weight:800;color:#fff}.hdr-sub{font-size:10px;font-weight:500;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px}
+.hdr-meta{display:flex;gap:18px;margin-left:auto}
+.hdr-field{text-align:right}.hdr-field-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px}.hdr-field-val{font-size:13px;font-weight:700;color:#fff}
+.sec{font-size:10px;font-weight:700;color:#8590AD;text-transform:uppercase;letter-spacing:1.3px;display:flex;align-items:center;gap:8px;margin:16px 0 10px}
+.sec::after{content:'';flex:1;height:1px;background:#E0E5EF}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.card{background:#fff;border:1px solid #E0E5EF;border-radius:10px;overflow:hidden}
+.card-hd{padding:10px 13px;border-bottom:1px solid #E0E5EF;font-size:12px;font-weight:700;color:#1A1D2B}
+.card-bd{padding:13px}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #E0E5EF}
+.sr:last-child{border-bottom:none}
+.sr-l{font-size:11px;color:#8590AD;font-weight:500}.sr-r{font-size:12px;font-weight:700;color:#1A1D2B}
+@media print{
+  body{background:#fff}
+  .page{max-width:100%;padding:12px 16px}
+  .no-print{display:none}
+  .card{break-inside:avoid}
+  @page{margin:12mm;size:A4}
+}
+</style></head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-mark">SMG<br>1</div>
+  <div><div class="hdr-name">SMG1 Closing Report</div><div class="hdr-sub">Dashboard Operacional</div></div>
+  <div class="hdr-meta">
+    <div class="hdr-field"><div class="hdr-field-lbl">Data</div><div class="hdr-field-val">${dataStr}</div></div>
+    <div class="hdr-field"><div class="hdr-field-lbl">Turno</div><div class="hdr-field-val">${turno}</div></div>
+    <div class="hdr-field"><div class="hdr-field-lbl">Responsável</div><div class="hdr-field-val">${resp}</div></div>
+  </div>
+</div>
+
+<!-- PERFORMANCE -->
+<div class="sec">📈 Performance Geral</div>
+<div class="kpis">
+  ${kpiCard('Fechamento FAG',fag>0?fag.toFixed(2)+'%':'—',stf)}
+  ${kpiCard('OOT Ciclo',ootc>0?ootc.toFixed(1)+'%':'—',stc,'Meta ≥ 95%')}
+  ${kpiCard('OOT Onda',ooto>0?ooto.toFixed(1)+'%':'—',sto,'Meta ≥ 95%')}
+  ${kpiCard('OOT Ciclo YMS',ootcy>0?ootcy.toFixed(1)+'%':'—',stcy,'Meta ≥ 90%')}
+  ${kpiCard('OOT Onda YMS',ootoy>0?ootoy.toFixed(1)+'%':'—',stoy,'Meta ≥ 90%')}
+</div>
+
+<!-- FAG + TOTAIS -->
+<div class="two" style="margin-bottom:10px">
+  <div class="card">
+    <div class="card-hd">Fechamento FAG</div>
+    <div class="card-bd" style="display:flex;align-items:center;gap:16px">
+      ${fagSVG}
+      <div style="flex:1">
+        <div style="font-size:11px;color:#8590AD;margin-bottom:3px">Meta ≥ 90%</div>
+        <div style="font-size:28px;font-weight:900;color:${kpiColor(stf)};line-height:1">${fag>0?fag.toFixed(2)+'%':'—'}</div>
+        <div style="font-size:11px;color:#8590AD;margin-top:6px">Turno ${turno}</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd">Totais Operacionais</div>
+    <div class="card-bd">
+      <div class="sr"><span class="sr-l">Total Planejado</span><span class="sr-r">${plan||'—'} rotas</span></div>
+      <div class="sr"><span class="sr-l">Delay</span><span class="sr-r" style="color:#E02020">${del||'—'} rotas</span></div>
+      <div class="sr"><span class="sr-l">Pendentes</span><span class="sr-r" style="color:#C8A800">${pend||'—'} rotas</span></div>
+      <div class="sr"><span class="sr-l">Concluídas</span><span class="sr-r" style="color:${kpiColor(stReal)}">${real||'—'} (${PCT(real,plan)})</span></div>
+      ${progBar(prp,kpiColor(stReal))}
+      <div class="sr"><span class="sr-l">% Delay</span><span class="sr-r">${PCT(del,plan)}</span></div>
+      ${progBar(pdp,'#E02020')}
+    </div>
+  </div>
+</div>
+
+<!-- TOTAIS KPIs -->
+<div class="four" style="margin-bottom:10px">
+  ${kpiCard('Planejadas',plan||'—','n')}
+  ${kpiCard('Concluídas',real||'—',stReal,PCT(real,plan))}
+  ${kpiCard('Delay',del||'—',del>0?'bad':'ok',PCT(del,plan))}
+  ${kpiCard('Pendentes',pend||'—',pend>0?'warn':'ok',pend>0?'Pendente':'OK')}
+</div>
+
+<!-- CARROS ATRASADOS -->
+<div class="sec">🚚 Carros Atrasados por Onda</div>
+<div class="four" style="margin-bottom:10px">${ondaData.map((o,i)=>ondaCard(o,i)).join('')}</div>
+
+<!-- ONDA CHARTS -->
+<div class="two" style="margin-bottom:10px">
+  <div class="card"><div class="card-hd">OOT por Onda — <span style="color:#3D4DB7">■ OOT %</span> <span style="color:#C8A800">■ YMS %</span></div><div class="card-bd" style="display:flex;justify-content:center">${ootSVG}</div></div>
+  <div class="card"><div class="card-hd">Delay e Pendentes por Onda — <span style="color:#E02020">■ Delay</span> <span style="color:#FF7500">■ Pendentes</span></div><div class="card-bd" style="display:flex;justify-content:center">${delaySVG}</div></div>
+</div>
+
+<!-- SACAS -->
+<div class="sec">🎒 Sacas Finalizadas antes das 07h</div>
+<div class="two" style="margin-bottom:10px">
+  <div class="card"><div class="card-hd">Controle de Sacas</div>
+    <div class="card-bd">
+      <div class="sr"><span class="sr-l">Total de Sacas</span><span class="sr-r">${sacTot||'—'}</span></div>
+      <div class="sr"><span class="sr-l">Sacas Fechadas</span><span class="sr-r" style="color:#00A650">${sacFech} (${PCT(sacFech,sacTot)})</span></div>
+      ${progBar(PCTN(sacFech,sacTot),'#00A650')}
+      <div class="sr"><span class="sr-l">Sacas para Auditar</span><span class="sr-r">${sacAud}</span></div>
+      <div class="sr"><span class="sr-l">Sacas Pendentes</span><span class="sr-r" style="color:${sacPend>0?'#C8A800':'#8590AD'}">${sacPend}</span></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-hd">Distribuição de Sacas — <span style="color:#00A650">■ Fechadas</span> <span style="color:#FF7500">■ Auditar</span> <span style="color:#E02020">■ Pendentes</span></div>
+    <div class="card-bd" style="display:flex;align-items:center;gap:20px">
+      ${sacSVG}
+      <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E0E5EF"><span style="font-size:11px;color:#8590AD">Fechadas</span><span style="font-weight:700;color:#00A650">${sacFech}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E0E5EF"><span style="font-size:11px;color:#8590AD">Auditar</span><span style="font-weight:700;color:#FF7500">${sacAud}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:#8590AD">Pendentes</span><span style="font-weight:700;color:#E02020">${sacPend}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLUME -->
+<div class="sec">📦 Volume Processado</div>
+<div class="two" style="margin-bottom:10px">
+  <div class="card"><div class="card-hd">Volume Processado</div>
+    <div class="card-bd">
+      <div class="sr"><span class="sr-l">Volume Total Processado</span><span class="sr-r">${volTot.toLocaleString('pt-BR')||'—'}</span></div>
+      <div class="sr"><span class="sr-l">Primeira Vez</span><span class="sr-r" style="color:#00A650">${volPv.toLocaleString('pt-BR')} (${PCT(volPv,volTot)})</span></div>
+      ${progBar(PCTN(volPv,volTot),'#00A650')}
+      <div class="sr"><span class="sr-l">Backlog</span><span class="sr-r" style="color:#E02020">${volBl.toLocaleString('pt-BR')} (${PCT(volBl,volTot)})</span></div>
+      ${progBar(PCTN(volBl,volTot),'#E02020')}
+    </div>
+  </div>
+  <div class="card"><div class="card-hd">Distribuição — <span style="color:#00A650">■ 1ª Vez</span> <span style="color:#E02020">■ Backlog</span></div>
+    <div class="card-bd" style="display:flex;align-items:center;gap:20px">
+      ${volSVG}
+      <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E0E5EF"><span style="font-size:11px;color:#8590AD">Primeira Vez</span><span style="font-weight:700;color:#00A650">${volPv.toLocaleString('pt-BR')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E0E5EF"><span style="font-size:11px;color:#8590AD">Backlog</span><span style="font-weight:700;color:#E02020">${volBl.toLocaleString('pt-BR')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:#8590AD">Outros</span><span style="font-weight:700;color:#8590AD">${Math.max(0,volTot-volBl-volPv).toLocaleString('pt-BR')}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLUMOSOS -->
+<div class="sec">📦 Volumosos</div>
+<div class="two" style="margin-bottom:10px">
+  <div class="card"><div class="card-hd">Volumosos</div>
+    <div class="card-bd">
+      <div class="sr"><span class="sr-l">One Bipe</span><span class="sr-r" style="color:#3D4DB7">${ob.toLocaleString('pt-BR')||'—'}</span></div>
+      <div class="sr"><span class="sr-l">Em Rota</span><span class="sr-r" style="color:#FF7500">${er.toLocaleString('pt-BR')||'—'}</span></div>
+      <div class="sr"><span class="sr-l">Total</span><span class="sr-r">${(ob+er).toLocaleString('pt-BR')||'—'}</span></div>
+      <div class="sr"><span class="sr-l">% Em Rota</span><span class="sr-r">${PCT(er,ob+er)}</span></div>
+      ${progBar(PCTN(er,ob+er),'#3D4DB7')}
+    </div>
+  </div>
+  <div class="card"><div class="card-hd">Distribuição — <span style="color:#3D4DB7">■ One Bipe</span> <span style="color:#FF7500">■ Em Rota</span></div>
+    <div class="card-bd" style="display:flex;align-items:center;gap:20px">
+      ${vol2SVG}
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E0E5EF"><span style="font-size:11px;color:#8590AD">One Bipe</span><span style="font-weight:700;color:#3D4DB7">${ob.toLocaleString('pt-BR')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:11px;color:#8590AD">Em Rota</span><span style="font-weight:700;color:#FF7500">${er.toLocaleString('pt-BR')}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+${obs?`<div class="sec">📝 Observações</div><div class="card"><div class="card-bd" style="white-space:pre-wrap;line-height:1.7;color:#1A1D2B">${obs}</div></div>`:''}
+
+<div style="margin-top:24px;text-align:center;font-size:10px;color:#8590AD">
+  SMG1 Closing Report — Gerado em ${new Date().toLocaleString('pt-BR')} — Turno ${turno}
+</div>
+
+<div class="no-print" style="text-align:center;margin-top:20px">
+  <button onclick="window.print()" style="background:#1A1F71;color:#fff;border:none;padding:10px 28px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">🖨️ Imprimir / Salvar como PDF</button>
+</div>
+
+</div>
+</body></html>`;
+  return html;
+}
+
+function exportPDF(){
+  const html=buildPDF();
+  const w=window.open('','_blank','width=1200,height=900');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>{ try{w.focus();w.print()}catch(e){} },800);
+}
+
+/* ── toast ── */
+let toastT;
+const ICONS={ok:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,cp:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,wn:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><line x1="12" y1="9" x2="12" y2="13"/></svg>`};
+function toast(msg,ic='ok'){clearTimeout(toastT);const el=$('toast');if(!el)return;el.innerHTML=(ICONS[ic]||ICONS.ok)+msg;el.classList.add('on');toastT=setTimeout(()=>el.classList.remove('on'),2800)}
+
+/* ── send WA — gera PDF + abre WhatsApp Web ── */
+async function sendWA(){
+  // 1. gera a mensagem
+  const text = genWA();
+
+  // 2. nome do arquivo PDF
+  const turno = V('meta-turno') || 'turno';
+  const dataRaw = V('meta-data') || new Date().toISOString().slice(0,10);
+  const pdfName = `SMG1_${turno}_${dataRaw}.pdf`;
+
+  // 3. captura o elemento .main ocultando .side e .hdr-r2
+  const side   = Q('.side');
+  const hdrR2  = Q('.hdr-r2');
+  const toastEl= $('toast');
+  const prevSide   = side   ? side.style.display   : null;
+  const prevHdrR2  = hdrR2  ? hdrR2.style.display  : null;
+  const prevToast  = toastEl? toastEl.style.display : null;
+  if(side)    side.style.display    = 'none';
+  if(hdrR2)   hdrR2.style.display   = 'none';
+  if(toastEl) toastEl.style.display = 'none';
+
+  // 4. gera e baixa o PDF com html2pdf
+  const element = Q('.shell') || document.body;
+  const opt = {
+    margin:       [8, 8, 8, 8],
+    filename:     pdfName,
+    image:        { type:'jpeg', quality:0.95 },
+    html2canvas:  { scale:2, useCORS:true, scrollY:0 },
+    jsPDF:        { unit:'mm', format:'a4', orientation:'portrait' },
+    pagebreak:    { mode:['avoid-all','css','legacy'] }
+  };
+  await html2pdf().set(opt).from(element).save();
+
+  // 5. restaura os elementos ocultados
+  if(side)    side.style.display    = prevSide;
+  if(hdrR2)   hdrR2.style.display   = prevHdrR2;
+  if(toastEl) toastEl.style.display = prevToast;
+
+  // 6. abre WhatsApp Web com a mensagem preenchida
+  const url = 'https://web.whatsapp.com/send?text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+
+  // 7. toast
+  toast('PDF baixado. Anexe-o no WhatsApp Web.', 'cp');
+}
+
+/* ── save + screenshot ── */
+async function saveWithScreenshot(){
+  // 1. salva normalmente (JSON + LocalStorage)
+  exportJSON();
+  lsSave();
+
+  // 2. monta o nome do arquivo
+  const d      = collect();
+  const unidade= 'SMG1';
+  const turno  = (d['meta-turno']  || 'turno').replace(/\s+/g,'_');
+  const data   = (d['meta-data']   || new Date().toISOString().slice(0,10));
+  const resp   = (d['meta-resp']   || 'responsavel')
+                   .trim()
+                   .replace(/\s+/g,'_')
+                   .replace(/[^a-zA-Z0-9_\-]/g,'');
+  const pngName= `${unidade}_${turno}_${data}_${resp}.png`;
+
+  // 3. preparação visual antes da captura
+  // oculta elementos que não devem aparecer
+  const toastEl   = $('toast');
+  const selects   = QA('select');
+  const inputs    = QA('input, textarea');
+  const prevToast = toastEl ? toastEl.style.visibility : null;
+  if(toastEl) toastEl.style.visibility = 'hidden';
+  // retira o caret/cursor dos inputs
+  inputs.forEach(el=>el.blur());
+
+  // garante que tudo está renderizado
+  await new Promise(r=>setTimeout(r,120));
+
+  // 4. captura a página inteira com html2canvas
+  try{
+    const canvas = await html2canvas(document.body, {
+      scale:         2,
+      useCORS:       true,
+      allowTaint:    true,
+      scrollX:       0,
+      scrollY:       0,
+      windowWidth:   document.documentElement.scrollWidth,
+      windowHeight:  document.documentElement.scrollHeight,
+      height:        document.documentElement.scrollHeight,
+      width:         document.documentElement.scrollWidth,
+      ignoreElements: el => el.id === 'toast'
+    });
+
+    // 5. baixa o PNG
+    const link = document.createElement('a');
+    link.download = pngName;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    toast('Salvo! Print gerado: '+pngName,'ok');
+  } catch(err){
+    console.error('Screenshot error:', err);
+    toast('Dados salvos. Erro no print.','wn');
+  } finally{
+    // restaura visibilidade
+    if(toastEl) toastEl.style.visibility = prevToast || '';
+  }
+}
+
+/* ── LocalStorage ── */
+const LS='smg1_v4';
+function collect(){const d={_ts:new Date().toISOString()};QA('[data-f]').forEach(el=>{d[el.dataset.f]=el.value});return d}
+function restore(data){if(!data)return;QA('[data-f]').forEach(el=>{const v=data[el.dataset.f];if(v!==undefined){el.value=v;el.dispatchEvent(new Event('input',{bubbles:true}))}})}
+function lsSave(){try{localStorage.setItem(LS,JSON.stringify(collect()))}catch(e){}const s=$('st');if(s)s.textContent='Salvo '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+function lsLoad(){try{return JSON.parse(localStorage.getItem(LS))}catch(e){return null}}
+let autoT;function schedSave(){clearTimeout(autoT);autoT=setTimeout(lsSave,1100)}
+
+/* ── JSON ── */
+function exportJSON(){const d=collect();const n=`SMG1_${d['meta-turno']||'turno'}_${(d['meta-data']||'').replace(/\//g,'-')||new Date().toISOString().slice(0,10)}.json`;const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'})),download:n});a.click();URL.revokeObjectURL(a.href)}
+function importJSON(file,cb){const r=new FileReader();r.onload=e=>{try{restore(JSON.parse(e.target.result));lsSave();cb(true)}catch{cb(false)}};r.readAsText(file)}
+
+/* ── CSV ── */
+function exportCSV(){
+  const d=collect(),g=k=>d[k]||'',n=k=>parseFloat(d[k])||0,plan=n('plan'),del=n('del'),pend=n('pend'),real=Math.max(0,plan-del-pend);
+  const rows=[['SMG1 CLOSING REPORT'],['Data',g('meta-data')],['Turno',g('meta-turno')],['Responsável',g('meta-resp')],[],['PERFORMANCE'],['FAG AM (%)',g('fag')],['OOT Ciclo (%)',g('ootc')],['OOT Onda (%)',g('ooto')],['OOT Ciclo YMS (%)',g('ootcy')],['OOT Onda YMS (%)',g('ootoy')],[],['TOTAIS'],['Planejado',plan],['Delay',del],['Pendentes',pend],['Concluídas',real],[],['ONDAS'],['Onda','Pendentes','Delay','OOT%','OOT YMS%'],...[['o1','1ª'],['o2','2ª'],['o3','3ª'],['o4','4ª']].map(([p,l])=>{const dl=n(`${p}-del`),pe=n(`${p}-pend`),y=n(`${p}-yms`),t=dl+pe;return[l+' Onda',pe,dl,t>0?(Math.max(0,(1-dl/t)*100)).toFixed(1):'—',y||'—']}),
+    [],['SACAS'],['Total',n('sac-tot')],['Fechadas',n('sac-fech')],['Auditar',n('sac-aud')],[],['VOLUME'],['Total',n('vol-tot')],['Backlog',n('vol-bl')],['Primeira Vez',n('vol-pv')],[],['VOLUMOSOS'],['One Bipe',n('vol-ob')],['Em Rota',n('vol-er')],[],['OBSERVAÇÕES'],[g('obs')]];
+  const csv='\uFEFF'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),download:`SMG1_${g('meta-turno')||'turno'}_${(g('meta-data')||'').replace(/\//g,'-')||new Date().toISOString().slice(0,10)}.csv`});
+  a.click();URL.revokeObjectURL(a.href);toast('Excel exportado!','ok');
+}
+
+/* ── dark ── */
+function initDark(){const btn=$('btn-dark');if(localStorage.getItem('smg1_theme')==='dark')applyDark(true);btn?.addEventListener('click',()=>{const is=document.documentElement.getAttribute('data-theme')==='dark';applyDark(!is);localStorage.setItem('smg1_theme',is?'light':'dark')})}
+function applyDark(on){document.documentElement.setAttribute('data-theme',on?'dark':'light');const btn=$('btn-dark');if(!btn)return;btn.innerHTML=on?`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Claro`:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Escuro`}
+
+/* ── reset ── */
+function resetAll(){QA('[data-f]').forEach(el=>{el.value='';el.dispatchEvent(new Event('input',{bubbles:true}))});const de=Q('[data-f="meta-data"]');if(de){de.value=new Date().toISOString().slice(0,10);de.dispatchEvent(new Event('input',{bubbles:true}))}try{localStorage.removeItem(LS)}catch(e){}}
+
+/* ── init ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  initCharts();initDark();
+  const de=Q('[data-f="meta-data"]');if(de)de.value=new Date().toISOString().slice(0,10);
+  const saved=lsLoad();if(saved)setTimeout(()=>restore(saved),80);
+  document.addEventListener('input',e=>{if(e.target.matches('[data-f]')){calcAll();schedSave()}});
+  setTimeout(calcAll,180);
+  $('btn-new')?.addEventListener('click',()=>{if(confirm('Limpar todos os dados?')){resetAll();toast('Novo relatório','ok')}});
+  $('btn-save')?.addEventListener('click',saveWithScreenshot);
+  $('btn-load')?.addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=e=>{const f=e.target.files[0];if(f)importJSON(f,ok=>toast(ok?'Carregado!':'Erro','ok'))};i.click()});
+  $('btn-pdf')?.addEventListener('click',exportPDF);
+  $('btn-xls')?.addEventListener('click',exportCSV);
+  $('btn-wa')?.addEventListener('click',sendWA);
+  $('btn-wa-hdr')?.addEventListener('click',sendWA);
+});
+</script>
 </body>
 </html>
