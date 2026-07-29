@@ -3,11 +3,60 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>SMG1 Closing Report</title>
+<title>Fechamento de Turno SMG1</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ================================================================
+   METAS — Configuração centralizada de metas operacionais SMG1
+   Altere apenas aqui para refletir em todo o sistema.
+   Tipo "gte" = maior ou igual é melhor; "lte" = menor ou igual é melhor.
+================================================================ */
+const METAS = {
+  fag:          { valor: 70.00,  tipo: 'gte', label: 'FAG',            fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≥ 70%'   },
+  ootCiclo:     { valor: 95.00,  tipo: 'gte', label: 'OOT Ciclo',      fmt: v => v.toFixed(1)+'%', metaStr: 'Meta ≥ 95%'   },
+  ootOnda:      { valor: 95.00,  tipo: 'gte', label: 'OOT Onda',       fmt: v => v.toFixed(1)+'%', metaStr: 'Meta ≥ 95%'   },
+  ootCicloYms:  { valor: 90.00,  tipo: 'gte', label: 'OOT Ciclo YMS',  fmt: v => v.toFixed(1)+'%', metaStr: 'Meta ≥ 90%'   },
+  ootOndaYms:   { valor: 90.00,  tipo: 'gte', label: 'OOT Onda YMS',   fmt: v => v.toFixed(1)+'%', metaStr: 'Meta ≥ 90%'   },
+  lms:          { valor: 80.00,  tipo: 'gte', label: 'LMS',            fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≥ 80%'   },
+  cia:          { valor:  5.00,  tipo: 'lte', label: 'CIA',            fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≤ 5%'    },
+  coa:          { valor:  5.00,  tipo: 'lte', label: 'COA',            fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≤ 5%'    },
+  coaMod:       { valor:  5.00,  tipo: 'lte', label: 'COA Mod',        fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≤ 5%'    },
+  spr:          { valor: 64.62,  tipo: 'gte', label: 'SPR LM',         fmt: v => v.toFixed(2),     metaStr: 'Meta ≥ 64,62' },
+  delay:        { valor:  3.45,  tipo: 'lte', label: 'Delay',          fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≤ 3,45%' },
+  tmec:         { valor: 83.00,  tipo: 'gte', label: 'TMEC/TMC',       fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≥ 83%'   },
+  yms:          { valor: 95.00,  tipo: 'gte', label: 'Aderência YMS',  fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≥ 95%'   },
+  delivery:     { valor: 98.30,  tipo: 'gte', label: 'Delivery Succ.', fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≥ 98,3%' },
+  sla:          { valor: 90.00,  tipo: 'gte', label: 'SLA Prob.Solver',fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≥ 90%'   },
+  oot:          { valor: 85.00,  tipo: 'gte', label: 'OOT Waves 3.0',  fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≥ 85%'   },
+  absenteismo:  { valor:  4.70,  tipo: 'lte', label: 'Absenteísmo',    fmt: v => v.toFixed(2)+'%', metaStr: 'Meta ≤ 4,7%'  }
+};
+
+/**
+ * Avalia se um valor atingiu a meta.
+ * @param {number} valor  - Valor medido
+ * @param {string} chave  - Chave em METAS (ex: 'fag')
+ * @returns {'ok'|'bad'|''}
+ */
+function avaliaMeta(valor, chave) {
+  if (!valor && valor !== 0) return '';
+  const m = METAS[chave];
+  if (!m) return '';
+  return m.tipo === 'gte' ? (valor >= m.valor ? 'ok' : 'bad')
+                           : (valor <= m.valor ? 'ok' : 'bad');
+}
+
+/**
+ * Retorna label de badge baseado no status.
+ * Apenas 'ok' ou 'bad' — sem 'warn' (metas são binárias).
+ */
+function badgeMeta(status) {
+  return status === 'ok' ? '✅ Meta Atingida' : status === 'bad' ? '❌ Abaixo da Meta' : '';
+}
+</script>
 <style>
 :root{
   --yellow:#FFE600;--yellow-dk:#C8A800;--yellow-lt:#FFFBE0;
@@ -193,6 +242,27 @@ a{text-decoration:none}
 @media(max-width:1100px){.shell{grid-template-columns:1fr}.side{position:relative;top:0;height:auto;border-left:none;border-top:1px solid var(--border);overflow:visible}.wa-scroll{max-height:260px}.ondas{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:768px){.hdr-r1{padding:8px 14px}.hdr-r2{padding:6px 14px}.main{padding:12px 12px 32px}.hdr-meta{display:none}.kpis{grid-template-columns:1fr 1fr}.ondas{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.g5{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.ondas{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+
+/* ── modal formato captura ── */
+#fmt-modal{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center}
+#fmt-modal.open{display:flex}
+#fmt-backdrop{position:absolute;inset:0;background:rgba(10,12,30,.55);backdrop-filter:blur(3px)}
+#fmt-box{position:relative;z-index:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh3);padding:24px 28px;min-width:280px;display:flex;flex-direction:column;gap:14px}
+#fmt-box h3{font-size:14px;font-weight:700;color:var(--text);margin:0}
+#fmt-box p{font-size:12px;color:var(--text-3);margin:0}
+.fmt-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fmt-btn{padding:10px 6px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--bg);cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .14s}
+.fmt-btn:hover{border-color:var(--blue-mid);background:var(--blue-lt);color:var(--blue)}
+.fmt-btn svg{width:22px;height:22px}
+.fmt-btn small{font-size:10px;font-weight:600;color:var(--text-3)}
+[data-theme="dark"] .fmt-btn:hover{background:rgba(61,77,183,.15);color:#8B9CF0}
+#fmt-cancel{background:none;border:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-3);padding:4px;text-align:center;font-family:inherit}
+#fmt-cancel:hover{color:var(--text)}
+#cap-spinner{display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,12,30,.62);align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#cap-spinner.on{display:flex}
+.spin-ring{width:44px;height:44px;border:4px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-txt{font-size:13px;font-weight:600;color:#fff;font-family:'Inter',sans-serif}
 </style>
 </head>
 <body>
@@ -202,8 +272,8 @@ a{text-decoration:none}
     <div class="logo">
       <div class="logo-mark">SMG<br>1</div>
       <div class="logo-txt">
-        <div class="logo-name">Closing Report</div>
-        <div class="logo-sub">Dashboard Operacional</div>
+        <div class="logo-name">Fechamento de Turno</div>
+        <div class="logo-sub">SMG1</div>
       </div>
     </div>
     <div class="hdr-meta">
@@ -286,16 +356,60 @@ a{text-decoration:none}
 
 <div class="sec">🚚 Carros Atrasados por Onda</div>
 <div class="ondas">
-  <div class="onda" data-onda="o1"><div class="onda-hd"><span class="onda-name">1ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o1-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o1-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o1-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
-  <div class="onda" data-onda="o2"><div class="onda-hd"><span class="onda-name">2ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o2-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o2-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o2-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
-  <div class="onda" data-onda="o3"><div class="onda-hd"><span class="onda-name">3ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o3-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o3-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o3-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
-  <div class="onda" data-onda="o4"><div class="onda-hd"><span class="onda-name">4ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o4-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o4-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o4-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="os-val o-oot">—</div><div class="os-lbl">OOT %</div></div><div class="onda-stat"><div class="os-val o-yms">—</div><div class="os-lbl">YMS %</div></div></div></div></div>
+  <div class="onda" data-onda="o1"><div class="onda-hd"><span class="onda-name">1ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o1-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o1-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o1-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o1-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o1-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
+  <div class="onda" data-onda="o2"><div class="onda-hd"><span class="onda-name">2ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o2-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o2-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o2-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o2-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o2-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
+  <div class="onda" data-onda="o3"><div class="onda-hd"><span class="onda-name">3ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o3-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o3-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o3-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o3-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o3-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
+  <div class="onda" data-onda="o4"><div class="onda-hd"><span class="onda-name">4ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o4-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o4-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o4-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o4-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o4-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
 </div>
 <div class="onda-strip"><div class="strip-pill">Total delay: <b id="o-del-tot">0</b></div><div class="strip-pill">Total pendentes: <b id="o-pend-tot">0</b></div></div>
 
 <div class="two">
   <div class="card"><div class="card-hd"><div class="c-ico ico-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><span class="c-title">OOT por Onda</span></div><div class="card-bd"><div class="ch" style="height:200px"><canvas id="ch-oot"></canvas></div></div></div>
   <div class="card"><div class="card-hd"><div class="c-ico ico-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="c-title">Delay e Pendentes por Onda</span></div><div class="card-bd"><div class="ch" style="height:200px"><canvas id="ch-delay"></canvas></div></div></div>
+</div>
+
+<div class="sec">📊 Indicadores Operacionais</div>
+
+<!-- inputs: 2 linhas de 6 colunas -->
+<div class="card">
+  <div class="card-hd"><div class="c-ico ico-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div><span class="c-title">Indicadores Operacionais</span><span class="c-sub">Preencha os valores do turno</span></div>
+  <div class="card-bd">
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-bottom:11px">
+      <div class="fld"><label class="lbl">LMS (%)</label><input type="number" class="inp" data-f="ind-lms" placeholder="80.00" step=".01" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">CIA (%)</label><input type="number" class="inp" data-f="ind-cia" placeholder="5.00" step=".01" min="0"/></div>
+      <div class="fld"><label class="lbl">COA (%)</label><input type="number" class="inp" data-f="ind-coa" placeholder="5.00" step=".01" min="0"/></div>
+      <div class="fld"><label class="lbl">COA Mod (%)</label><input type="number" class="inp" data-f="ind-coamod" placeholder="5.00" step=".01" min="0"/></div>
+      <div class="fld"><label class="lbl">SPR LM</label><input type="number" class="inp" data-f="ind-spr" placeholder="64.62" step=".01" min="0"/></div>
+      <div class="fld"><label class="lbl">Delay (%)</label><input type="number" class="inp" data-f="ind-delay" placeholder="3.45" step=".01" min="0"/></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:11px">
+      <div class="fld"><label class="lbl">TMEC/TMC (%)</label><input type="number" class="inp" data-f="ind-tmec" placeholder="83.00" step=".01" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">Ader. YMS (%)</label><input type="number" class="inp" data-f="ind-yms" placeholder="95.00" step=".01" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">Delivery Succ. (%)</label><input type="number" class="inp" data-f="ind-delivery" placeholder="98.30" step=".01" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">SLA Prob. Solver (%)</label><input type="number" class="inp" data-f="ind-sla" placeholder="90.00" step=".01" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">OOT Waves 3.0 (%)</label><input type="number" class="inp" data-f="ind-oot" placeholder="85.00" step=".01" min="0" max="100"/></div>
+      <div class="fld"><label class="lbl">Absenteísmo (%)</label><input type="number" class="inp" data-f="ind-absen" placeholder="4.70" step=".01" min="0"/></div>
+    </div>
+  </div>
+</div>
+
+<!-- KPI cards dos indicadores operacionais — linha 1 -->
+<div class="kpis" style="grid-template-columns:repeat(6,1fr)">
+  <div class="kpi" id="k-lms">       <div class="kpi-lbl">LMS</div>             <div class="kpi-val" id="kv-lms">—</div>       <span class="kpi-tag tg-n" id="kt-lms">—</span>       <div class="kpi-meta">Meta ≥ 80%</div></div>
+  <div class="kpi" id="k-cia">       <div class="kpi-lbl">CIA</div>             <div class="kpi-val" id="kv-cia">—</div>       <span class="kpi-tag tg-n" id="kt-cia">—</span>       <div class="kpi-meta">Meta ≤ 5%</div></div>
+  <div class="kpi" id="k-coa">       <div class="kpi-lbl">COA</div>             <div class="kpi-val" id="kv-coa">—</div>       <span class="kpi-tag tg-n" id="kt-coa">—</span>       <div class="kpi-meta">Meta ≤ 5%</div></div>
+  <div class="kpi" id="k-coamod">    <div class="kpi-lbl">COA Mod</div>        <div class="kpi-val" id="kv-coamod">—</div>    <span class="kpi-tag tg-n" id="kt-coamod">—</span>    <div class="kpi-meta">Meta ≤ 5%</div></div>
+  <div class="kpi" id="k-spr">       <div class="kpi-lbl">SPR LM</div>         <div class="kpi-val" id="kv-spr">—</div>       <span class="kpi-tag tg-n" id="kt-spr">—</span>       <div class="kpi-meta">Meta ≥ 64,62</div></div>
+  <div class="kpi" id="k-delay-ind"> <div class="kpi-lbl">Delay</div>           <div class="kpi-val" id="kv-delay-ind">—</div> <span class="kpi-tag tg-n" id="kt-delay-ind">—</span> <div class="kpi-meta">Meta ≤ 3,45%</div></div>
+</div>
+<!-- KPI cards dos indicadores operacionais — linha 2 -->
+<div class="kpis" style="grid-template-columns:repeat(6,1fr)">
+  <div class="kpi" id="k-tmec">      <div class="kpi-lbl">TMEC/TMC</div>       <div class="kpi-val" id="kv-tmec">—</div>      <span class="kpi-tag tg-n" id="kt-tmec">—</span>      <div class="kpi-meta">Meta ≥ 83%</div></div>
+  <div class="kpi" id="k-yms-ind">   <div class="kpi-lbl">Ader. YMS</div>      <div class="kpi-val" id="kv-yms-ind">—</div>   <span class="kpi-tag tg-n" id="kt-yms-ind">—</span>   <div class="kpi-meta">Meta ≥ 95%</div></div>
+  <div class="kpi" id="k-delivery">  <div class="kpi-lbl">Delivery Succ.</div> <div class="kpi-val" id="kv-delivery">—</div>  <span class="kpi-tag tg-n" id="kt-delivery">—</span>  <div class="kpi-meta">Meta ≥ 98,3%</div></div>
+  <div class="kpi" id="k-sla">       <div class="kpi-lbl">SLA Prob.Solver</div><div class="kpi-val" id="kv-sla">—</div>       <span class="kpi-tag tg-n" id="kt-sla">—</span>       <div class="kpi-meta">Meta ≥ 90%</div></div>
+  <div class="kpi" id="k-oot-ind">   <div class="kpi-lbl">OOT Waves 3.0</div> <div class="kpi-val" id="kv-oot-ind">—</div>   <span class="kpi-tag tg-n" id="kt-oot-ind">—</span>   <div class="kpi-meta">Meta ≥ 85%</div></div>
+  <div class="kpi" id="k-absen">     <div class="kpi-lbl">Absenteísmo</div>   <div class="kpi-val" id="kv-absen">—</div>     <span class="kpi-tag tg-n" id="kt-absen">—</span>     <div class="kpi-meta">Meta ≤ 4,7%</div></div>
 </div>
 
 <div class="sec">🎒 Sacas Finalizadas antes das 07h</div>
@@ -363,6 +477,34 @@ a{text-decoration:none}
 </aside>
 </div>
 
+<!-- ── modal formato de captura ── -->
+<div id="fmt-modal" role="dialog" aria-modal="true">
+  <div id="fmt-backdrop"></div>
+  <div id="fmt-box">
+    <h3>💾 Salvar dashboard</h3>
+    <p>Escolha o formato do arquivo gerado:</p>
+    <div class="fmt-btns">
+      <button class="fmt-btn" id="fmt-png">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        PNG
+        <small>Imagem de alta resolução</small>
+      </button>
+      <button class="fmt-btn" id="fmt-pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        PDF
+        <small>Documento paginado</small>
+      </button>
+    </div>
+    <button id="fmt-cancel">Cancelar</button>
+  </div>
+</div>
+
+<!-- ── spinner durante captura ── -->
+<div id="cap-spinner">
+  <div class="spin-ring"></div>
+  <div class="spin-txt" id="spin-txt">Gerando captura…</div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -378,7 +520,7 @@ const PCTN=(a,b)=>b>0?Math.min(100,Math.max(0,(a/b)*100)):0;
 const CLAMP=(v,l,h)=>Math.min(h,Math.max(l,v));
 function stCls(v,hi,lo){return v>=hi?'ok':v>=lo?'warn':'bad'}
 function tagCls(s){return s==='ok'?'tg-ok':s==='warn'?'tg-warn':s==='bad'?'tg-bad':'tg-n'}
-function tagTxt(s){return s==='ok'?'✓ Meta':s==='warn'?'⚠ Atenção':'✗ Abaixo'}
+function tagTxt(s){return s==='ok'?'✅ Meta Atingida':s==='warn'?'⚠ Atenção':'❌ Abaixo da Meta'}
 function setKPI(id,val,cls,tag,meta){
   const el=$(id);if(!el)return;
   el.className='kpi'+(cls?' '+cls:'');
@@ -417,16 +559,59 @@ function initCharts(){
 }
 
 /* ── calcs ── */
-function calcAll(){calcPerf();calcTotais();calcOndas();calcSacas();calcVol();calcVolumos();genWA()}
+function calcAll(){calcPerf();calcTotais();calcOndas();calcSacas();calcVol();calcVolumos();calcIndicadores();genWA()}
+
+/* ── indicadores operacionais ── */
+function calcIndicadores(){
+  // Mapeamento: [data-f, id-kpi, chave-METAS]
+  const ind = [
+    ['ind-lms',      'k-lms',       'lms'],
+    ['ind-cia',      'k-cia',       'cia'],
+    ['ind-coa',      'k-coa',       'coa'],
+    ['ind-coamod',   'k-coamod',    'coaMod'],
+    ['ind-spr',      'k-spr',       'spr'],
+    ['ind-delay',    'k-delay-ind', 'delay'],
+    ['ind-tmec',     'k-tmec',      'tmec'],
+    ['ind-yms',      'k-yms-ind',   'yms'],
+    ['ind-delivery', 'k-delivery',  'delivery'],
+    ['ind-sla',      'k-sla',       'sla'],
+    ['ind-oot',      'k-oot-ind',   'oot'],
+    ['ind-absen',    'k-absen',     'absenteismo'],
+  ];
+  ind.forEach(([campo, kpiId, chave])=>{
+    const v = F(campo);
+    const m = METAS[chave];
+    if(!m) return;
+    const s = v > 0 ? avaliaMeta(v, chave) : '';
+    const valStr = v > 0 ? m.fmt(v) : '—';
+    const tagStr = v > 0 ? badgeMeta(s) : '—';
+    setKPI(kpiId, valStr, s, tagStr, m.metaStr);
+    // também atualiza o kv-* interno se existir
+    const kv = document.getElementById('kv-' + kpiId.replace('k-',''));
+    if(kv) kv.textContent = valStr;
+  });
+}
 function calcPerf(){
   const fag=F('fag'),c=F('ootc'),o=F('ooto'),cy=F('ootcy'),oy=F('ootoy');
-  const sf=fag>0?stCls(fag,70,70):'';
-  setKPI('k-fag',fag>0?fag.toFixed(2)+'%':'—',sf,fag>0?tagTxt(sf):undefined);
+
+  // FAG — usa METAS.fag
+  const sf=fag>0?avaliaMeta(fag,'fag'):'';
+  setKPI('k-fag',fag>0?fag.toFixed(2)+'%':'—',sf,fag>0?badgeMeta(sf):undefined,METAS.fag.metaStr);
   const fcv=$('fag-cv');if(fcv)fcv.textContent=fag>0?fag.toFixed(1)+'%':'—';
-  const fv=CLAMP(fag,0,100),fc=sf==='ok'?GP:sf==='warn'?YP:sf==='bad'?RP:GY;
+  const fv=CLAMP(fag,0,100),fc=sf==='ok'?GP:sf==='bad'?RP:GY;
   upd(chFAG,[fv,100-fv]);if(chFAG){chFAG.data.datasets[0].backgroundColor=[fc,GY];chFAG.update('none')}
-  function kpi(id,v,hi,lo){const s=v>0?stCls(v,hi,lo):'';setKPI(id,v>0?v.toFixed(1)+'%':'—',s)}
-  kpi('k-ootc',c,95,85);kpi('k-ooto',o,95,85);kpi('k-ootcy',cy,90,70);kpi('k-ootoy',oy,90,70);
+
+  // OOTs — usam METAS
+  function kpiM(id,v,chave){
+    const s=v>0?avaliaMeta(v,chave):'';
+    const m=METAS[chave];
+    setKPI(id,v>0?m.fmt(v):'—',s,v>0?badgeMeta(s):undefined,m.metaStr);
+  }
+  kpiM('k-ootc',c,'ootCiclo');
+  kpiM('k-ooto',o,'ootOnda');
+  kpiM('k-ootcy',cy,'ootCicloYms');
+  kpiM('k-ootoy',oy,'ootOndaYms');
+
   SET('kv-fag',fag>0?fag.toFixed(2)+'%':'—');SET('kv-ootc',c>0?c.toFixed(1)+'%':'—');
   SET('kv-ooto',o>0?o.toFixed(1)+'%':'—');SET('kv-ootcy',cy>0?cy.toFixed(1)+'%':'—');SET('kv-ootoy',oy>0?oy.toFixed(1)+'%':'—');
 }
@@ -436,7 +621,9 @@ function calcTotais(){
   const prp=PCTN(real,plan),pdp=PCTN(del,plan),ppp=PCTN(pend,plan);
   SET('c-real',real||'—');SET('c-rpct',PCT(real,plan));SET('c-dpct',PCT(del,plan));SET('c-ppct',PCT(pend,plan));
   setPg('pg-real',prp,'g');setPg('pg-del',pdp,'r');setPg('pg-pend',ppp,'y');
-  const sr=plan>0?stCls(prp,90,75):'';
+  // Delay% usa METAS.delay (lte); conclusão não tem meta configurada — usa limiar operacional interno
+  const delaySt=pdp>0?avaliaMeta(pdp,'delay'):'';
+  const sr=plan>0?(prp>=95?'ok':prp>=75?'bad':'bad'):'';
   $('k-plan').className='kpi';SET('kv-plan',plan||'—');
   setKPI('k-real',real||'—',sr,plan>0?PCT(real,plan):undefined);
   setKPI('k-del',del||'—',del>0?'bad':'',del>0?PCT(del,plan):undefined);
@@ -448,21 +635,24 @@ function calcOndas(){
   let totD=0,totP=0;const ootD=[],ymsD=[],delD=[],pendD=[];
   ['o1','o2','o3','o4'].forEach(p=>{
     const d=F(`${p}-del`),pe=F(`${p}-pend`),y=F(`${p}-yms`),tot=d+pe;
-    const oot=tot>0?Math.max(0,(1-d/tot)*100):0;
-    const ootStr=tot>0?oot.toFixed(1)+'%':'—',yStr=y>0?y.toFixed(1)+'%':'—';
+    // OOT % e YMS % lidos dos inputs — sem cálculo automático
+    const oot=F(`${p}-oot`);
+    const ootYms=F(`${p}-oot-yms`);
     const card=Q(`[data-onda="${p}"]`);
     if(card){
       const badge=card.querySelector('.onda-badge');
-      if(badge){if(!tot){badge.className='onda-badge ob-n';badge.textContent='—'}
+      if(badge){if(!tot&&!oot){badge.className='onda-badge ob-n';badge.textContent='—'}
         else if(pe>0){badge.className='onda-badge ob-bad';badge.textContent=pe+' pend.'}
-        else if(oot<85){badge.className='onda-badge ob-warn';badge.textContent=d+' delay'}
-        else{badge.className='onda-badge ob-ok';badge.textContent='OK'}}
+        else if(oot>0&&oot<METAS.oot.valor){badge.className='onda-badge ob-warn';badge.textContent=d+' delay'}
+        else if(oot>=METAS.oot.valor){badge.className='onda-badge ob-ok';badge.textContent='OK'}
+        else{badge.className='onda-badge ob-n';badge.textContent='—'}}
+      // cor de status nos inputs OOT % e YMS %
       const oe=card.querySelector('.o-oot');
-      if(oe){oe.textContent=ootStr;const sc=tot>0?stCls(oot,90,75):'';oe.className='os-val o-oot'+(sc==='ok'?' c-ok':sc==='warn'?' c-warn':sc==='bad'?' c-bad':'')}
+      if(oe){const sc=oot>0?avaliaMeta(oot,'oot'):'';oe.style.color=sc==='ok'?'var(--green)':sc==='bad'?'var(--red)':''}
       const ye=card.querySelector('.o-yms');
-      if(ye){ye.textContent=yStr;const sy=y>0?stCls(y,90,70):'';ye.className='os-val o-yms'+(sy==='ok'?' c-ok':sy==='warn'?' c-warn':sy==='bad'?' c-bad':'')}
+      if(ye){const sy=ootYms>0?avaliaMeta(ootYms,'ootOndaYms'):'';ye.style.color=sy==='ok'?'var(--green)':sy==='bad'?'var(--red)':''}
     }
-    totD+=d;totP+=pe;ootD.push(tot>0?oot:0);ymsD.push(y);delD.push(d);pendD.push(pe);
+    totD+=d;totP+=pe;ootD.push(oot);ymsD.push(ootYms);delD.push(d);pendD.push(pe);
   });
   SET('o-del-tot',totD);SET('o-pend-tot',totP);upd(chOOT,ootD,ymsD);upd(chDelay,delD,pendD);
 }
@@ -490,11 +680,28 @@ function genWA(){
   const dt=d?new Date(d+'T12:00').toLocaleDateString('pt-BR'):new Date().toLocaleDateString('pt-BR');
   const plan=F('plan'),del=F('del'),pend=F('pend'),real=Math.max(0,plan-del-pend);
   const ondas=['o1','o2','o3','o4'].map((p,i)=>{
-    const pd=F(`${p}-pend`),dl=F(`${p}-del`),y=F(`${p}-yms`),tot=pd+dl;
-    return `• ${i+1}ª Onda: ${pd} pendente${pd!==1?'s':''} | ${dl} delay | OOT ${tot>0?(Math.max(0,(1-dl/tot)*100)).toFixed(1)+'%':'—'} | OOT YMS ${y>0?y.toFixed(1)+'%':'—'}`;
+    const pd=F(`${p}-pend`),dl=F(`${p}-del`),oot=F(`${p}-oot`),ootYms=F(`${p}-oot-yms`);
+    return `• ${i+1}ª Onda: ${pd} pendente${pd!==1?'s':''} | ${dl} delay | OOT ${oot>0?oot.toFixed(1)+'%':'—'} | OOT YMS ${ootYms>0?ootYms.toFixed(1)+'%':'—'}`;
   }).join('\n');
   const st=F('sac-tot'),sf=F('sac-fech'),sa=F('sac-aud'),obs=V('obs');
-  const msg=`📊 *Relatório ${turno} — ${dt}*\n\n📈 *Performance Geral*\n• Fechamento FAG ${turno}: ${V('fag')||'—'}%\n• OOT Ciclo: ${V('ootc')||'—'}%\n• OOT Onda: ${V('ooto')||'—'}%\n• OOT Ciclo YMS: ${V('ootcy')||'—'}%\n• OOT Onda YMS: ${V('ootoy')||'—'}%\n\n📌 *Totais Operacionais*\n• Total planejado: ${plan||'—'} rotas\n• Realizadas: ${real} (${PCT(real,plan)})\n• Delay: ${del} rotas\n• Pendentes: ${pend} rotas\n\n🚚 *Carros Atrasados*\n${ondas}\n\n🎒 *Sacas finalizadas antes das 07h*\n• Total de sacas: ${st||'—'}\n• Sacas já fechadas: ${sf} (${PCT(sf,st)})\n• Sacas para auditar: ${sa}\n• Sacas pendentes: ${Math.max(0,st-sf-sa)}\n\n📦 *Volume Processado*\n• Volume total processado: ${fmtN(F('vol-tot'))}\n• Backlog: ${fmtN(F('vol-bl'))}\n• Primeira vez: ${fmtN(F('vol-pv'))}\n\n📦 *Volumosos*\n• One Bipe: ${fmtN(F('vol-ob'))}\n• Em Rota: ${fmtN(F('vol-er'))}${obs?'\n\n📝 *Observações*\n'+obs:''}`;
+
+  // Indicadores Operacionais — apenas os que foram preenchidos
+  const indOp=[
+    ['ind-lms','lms','LMS'],['ind-cia','cia','CIA'],['ind-coa','coa','COA'],
+    ['ind-coamod','coaMod','COA Mod'],['ind-spr','spr','SPR LM'],['ind-delay','delay','Delay'],
+    ['ind-tmec','tmec','TMEC/TMC'],['ind-yms','yms','Ader. YMS'],
+    ['ind-delivery','delivery','Delivery Succ.'],['ind-sla','sla','SLA Prob.Solver'],
+    ['ind-oot','oot','OOT Waves 3.0'],['ind-absen','absenteismo','Absenteísmo'],
+  ].filter(([campo])=>F(campo)>0)
+   .map(([campo,chave,lbl])=>{
+     const v=F(campo),m=METAS[chave];
+     const s=avaliaMeta(v,chave);
+     const badge=s==='ok'?'✅':'❌';
+     return `• ${lbl}: ${m.fmt(v)} ${badge} (${m.metaStr})`;
+   }).join('\n');
+
+  const indOpBlock = indOp ? `\n\n📊 *Indicadores Operacionais*\n${indOp}` : '';
+  const msg=`📊 *Relatório ${turno} — ${dt}*\n\n📈 *Performance Geral*\n• Fechamento FAG ${turno}: ${V('fag')||'—'}%\n• OOT Ciclo: ${V('ootc')||'—'}%\n• OOT Onda: ${V('ooto')||'—'}%\n• OOT Ciclo YMS: ${V('ootcy')||'—'}%\n• OOT Onda YMS: ${V('ootoy')||'—'}%\n\n📌 *Totais Operacionais*\n• Total planejado: ${plan||'—'} rotas\n• Realizadas: ${real} (${PCT(real,plan)})\n• Delay: ${del} rotas\n• Pendentes: ${pend} rotas${indOpBlock}\n\n🚚 *Carros Atrasados*\n${ondas}\n\n🎒 *Sacas finalizadas antes das 07h*\n• Total de sacas: ${st||'—'}\n• Sacas já fechadas: ${sf} (${PCT(sf,st)})\n• Sacas para auditar: ${sa}\n• Sacas pendentes: ${Math.max(0,st-sf-sa)}\n\n📦 *Volume Processado*\n• Volume total processado: ${fmtN(F('vol-tot'))}\n• Backlog: ${fmtN(F('vol-bl'))}\n• Primeira vez: ${fmtN(F('vol-pv'))}\n\n📦 *Volumosos*\n• One Bipe: ${fmtN(F('vol-ob'))}\n• Em Rota: ${fmtN(F('vol-er'))}${obs?'\n\n📝 *Observações*\n'+obs:''}`;
   const el=$('wa-out');if(el)el.textContent=msg;return msg;
 }
 
@@ -539,10 +746,13 @@ function kpiBar(st){return st==='ok'?'#00A650':st==='warn'?'#C8A800':st==='bad'?
 function buildPDF(){
   const plan=F('plan'),del=F('del'),pend=F('pend'),real=Math.max(0,plan-del-pend);
   const fag=F('fag'),ootc=F('ootc'),ooto=F('ooto'),ootcy=F('ootcy'),ootoy=F('ootoy');
-  const stf=fag>0?stCls(fag,70,70):'n',stc=ootc>0?stCls(ootc,95,85):'n';
-  const sto=ooto>0?stCls(ooto,95,85):'n',stcy=ootcy>0?stCls(ootcy,90,70):'n',stoy=ootoy>0?stCls(ootoy,90,70):'n';
+  const stf  = fag>0   ? avaliaMeta(fag,  'fag')         : 'n';
+  const stc  = ootc>0  ? avaliaMeta(ootc, 'ootCiclo')    : 'n';
+  const sto  = ooto>0  ? avaliaMeta(ooto, 'ootOnda')     : 'n';
+  const stcy = ootcy>0 ? avaliaMeta(ootcy,'ootCicloYms') : 'n';
+  const stoy = ootoy>0 ? avaliaMeta(ootoy,'ootOndaYms')  : 'n';
   const prp=PCTN(real,plan),pdp=PCTN(del,plan),ppp=PCTN(pend,plan);
-  const stReal=plan>0?stCls(prp,90,75):'n';
+  const stReal=plan>0?(prp>=95?'ok':'bad'):'n';
   const sacTot=F('sac-tot'),sacFech=F('sac-fech'),sacAud=F('sac-aud'),sacPend=Math.max(0,sacTot-sacFech-sacAud);
   const volTot=F('vol-tot'),volBl=F('vol-bl'),volPv=F('vol-pv');
   const ob=F('vol-ob'),er=F('vol-er');
@@ -551,13 +761,14 @@ function buildPDF(){
   const resp=V('meta-resp')||'—';
   const obs=V('obs');
 
-  // Ondas
+  // Ondas — OOT % e YMS % lidos dos inputs
   const ondaData=['o1','o2','o3','o4'].map((p,i)=>{
     const d=F(`${p}-del`),pe=F(`${p}-pend`),y=F(`${p}-yms`),tot=d+pe;
-    const oot=tot>0?Math.max(0,(1-d/tot)*100):0;
-    const ootSt=tot>0?stCls(oot,90,75):'n';
-    const ymsSt=y>0?stCls(y,90,70):'n';
-    return{d,pe,y,tot,oot,ootStr:tot>0?oot.toFixed(1)+'%':'—',yStr:y>0?y.toFixed(1)+'%':'—',ootSt,ymsSt,label:`${i+1}ª Onda`};
+    const oot=F(`${p}-oot`);
+    const ootYms=F(`${p}-oot-yms`);
+    const ootSt=oot>0?avaliaMeta(oot,'oot'):'n';
+    const ymsSt=ootYms>0?avaliaMeta(ootYms,'ootOndaYms'):'n';
+    return{d,pe,y,tot,oot,ootStr:oot>0?oot.toFixed(1)+'%':'—',yStr:ootYms>0?ootYms.toFixed(1)+'%':'—',ootSt,ymsSt,label:`${i+1}ª Onda`};
   });
 
   // SVG charts
@@ -572,24 +783,24 @@ function buildPDF(){
     const w=Math.min(100,Math.max(0,pct));
     return`<div style="height:5px;background:#E0E5EF;border-radius:99px;overflow:hidden;margin:3px 0 6px"><div style="height:100%;width:${w}%;background:${color};border-radius:99px"></div></div>`;
   }
-  function kpiCard(lbl,val,st,sub){
+  function kpiCard(lbl,val,st,metaTxt){
     const c=kpiColor(st),bar=kpiBar(st);
-    const tagMap={ok:'✓ Meta',warn:'⚠ Atenção',bad:'✗ Abaixo',n:''};
+    const tagTxtPdf={ok:'✅ Meta Atingida',bad:'❌ Abaixo da Meta',warn:'⚠ Atenção',n:''};
     const bgMap={ok:'#E5F7EE',warn:'#FFFBE0',bad:'#FDEAEA',n:'#F1F3F9'};
     const tcMap={ok:'#00A650',warn:'#8A6A00',bad:'#E02020',n:'#8590AD'};
     return`<div style="background:#fff;border:1px solid #E0E5EF;border-radius:10px;padding:12px 13px;position:relative;overflow:hidden">
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${bar};border-radius:10px 10px 0 0"></div>
       <div style="font-size:9px;font-weight:700;color:#8590AD;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">${lbl}</div>
       <div style="font-size:22px;font-weight:800;color:#1A1D2B;line-height:1;letter-spacing:-.5px;margin-bottom:5px">${val}</div>
-      ${tagMap[st]?`<span style="display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;background:${bgMap[st]};color:${tcMap[st]}">${tagMap[st]}</span>`:''}
-      ${sub?`<div style="font-size:10px;color:#8590AD;margin-top:3px">${sub}</div>`:''}
+      ${tagTxtPdf[st]?`<span style="display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;background:${bgMap[st]};color:${tcMap[st]}">${tagTxtPdf[st]}</span>`:''}
+      ${metaTxt?`<div style="font-size:10px;color:#8590AD;margin-top:3px">${metaTxt}</div>`:''}
     </div>`;
   }
   function ondaCard(o,i){
     const hdrBg='#1A1F71';
     const badgeMap={ok:`background:#00A650;color:#fff`,warn:`background:#FFE600;color:#1A1F71`,bad:`background:#E02020;color:#fff`,n:`background:rgba(255,255,255,.15);color:rgba(255,255,255,.65)`};
-    const badgeTxt=o.tot===0?'—':o.pe>0?`${o.pe} pend.`:o.oot<85?`${o.d} delay`:'OK';
-    const badgeSt=o.tot===0?'n':o.pe>0?'bad':o.oot<85?'warn':'ok';
+    const badgeTxt=o.tot===0?'—':o.pe>0?`${o.pe} pend.`:o.oot<METAS.oot.valor?`${o.d} delay`:'OK';
+    const badgeSt=o.tot===0?'n':o.pe>0?'bad':o.oot<METAS.oot.valor?'warn':'ok';
     const cOot=kpiColor(o.ootSt),cYms=kpiColor(o.ymsSt);
     return`<div style="background:#fff;border:1px solid #E0E5EF;border-radius:10px;overflow:hidden">
       <div style="background:${hdrBg};padding:7px 10px;display:flex;align-items:center;justify-content:space-between">
@@ -616,7 +827,7 @@ function buildPDF(){
   }
 
   const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/>
-<title>SMG1 Closing Report — ${turno} ${dataStr}</title>
+<title>Fechamento de Turno SMG1 — ${turno} ${dataStr}</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -652,7 +863,7 @@ body{font-family:'Inter',sans-serif;background:#F1F3F9;color:#1A1D2B;font-size:1
 <!-- HEADER -->
 <div class="hdr">
   <div class="hdr-mark">SMG<br>1</div>
-  <div><div class="hdr-name">SMG1 Closing Report</div><div class="hdr-sub">Dashboard Operacional</div></div>
+  <div><div class="hdr-name">Fechamento de Turno SMG1</div><div class="hdr-sub">Dashboard Operacional</div></div>
   <div class="hdr-meta">
     <div class="hdr-field"><div class="hdr-field-lbl">Data</div><div class="hdr-field-val">${dataStr}</div></div>
     <div class="hdr-field"><div class="hdr-field-lbl">Turno</div><div class="hdr-field-val">${turno}</div></div>
@@ -663,11 +874,11 @@ body{font-family:'Inter',sans-serif;background:#F1F3F9;color:#1A1D2B;font-size:1
 <!-- PERFORMANCE -->
 <div class="sec">📈 Performance Geral</div>
 <div class="kpis">
-  ${kpiCard('Fechamento FAG',fag>0?fag.toFixed(2)+'%':'—',stf)}
-  ${kpiCard('OOT Ciclo',ootc>0?ootc.toFixed(1)+'%':'—',stc,'Meta ≥ 95%')}
-  ${kpiCard('OOT Onda',ooto>0?ooto.toFixed(1)+'%':'—',sto,'Meta ≥ 95%')}
-  ${kpiCard('OOT Ciclo YMS',ootcy>0?ootcy.toFixed(1)+'%':'—',stcy,'Meta ≥ 90%')}
-  ${kpiCard('OOT Onda YMS',ootoy>0?ootoy.toFixed(1)+'%':'—',stoy,'Meta ≥ 90%')}
+  ${kpiCard(METAS.fag.label,        fag>0  ?fag.toFixed(2)+'%' :'—', stf,  METAS.fag.metaStr)}
+  ${kpiCard(METAS.ootCiclo.label,   ootc>0 ?ootc.toFixed(1)+'%':'—', stc,  METAS.ootCiclo.metaStr)}
+  ${kpiCard(METAS.ootOnda.label,    ooto>0 ?ooto.toFixed(1)+'%':'—', sto,  METAS.ootOnda.metaStr)}
+  ${kpiCard(METAS.ootCicloYms.label,ootcy>0?ootcy.toFixed(1)+'%':'—',stcy, METAS.ootCicloYms.metaStr)}
+  ${kpiCard(METAS.ootOndaYms.label, ootoy>0?ootoy.toFixed(1)+'%':'—',stoy, METAS.ootOndaYms.metaStr)}
 </div>
 
 <!-- FAG + TOTAIS -->
@@ -677,7 +888,7 @@ body{font-family:'Inter',sans-serif;background:#F1F3F9;color:#1A1D2B;font-size:1
     <div class="card-bd" style="display:flex;align-items:center;gap:16px">
       ${fagSVG}
       <div style="flex:1">
-        <div style="font-size:11px;color:#8590AD;margin-bottom:3px">Meta ≥ 90%</div>
+        <div style="font-size:11px;color:#8590AD;margin-bottom:3px">${METAS.fag.metaStr}</div>
         <div style="font-size:28px;font-weight:900;color:${kpiColor(stf)};line-height:1">${fag>0?fag.toFixed(2)+'%':'—'}</div>
         <div style="font-size:11px;color:#8590AD;margin-top:6px">Turno ${turno}</div>
       </div>
@@ -713,6 +924,29 @@ body{font-family:'Inter',sans-serif;background:#F1F3F9;color:#1A1D2B;font-size:1
 <div class="two" style="margin-bottom:10px">
   <div class="card"><div class="card-hd">OOT por Onda — <span style="color:#3D4DB7">■ OOT %</span> <span style="color:#C8A800">■ YMS %</span></div><div class="card-bd" style="display:flex;justify-content:center">${ootSVG}</div></div>
   <div class="card"><div class="card-hd">Delay e Pendentes por Onda — <span style="color:#E02020">■ Delay</span> <span style="color:#FF7500">■ Pendentes</span></div><div class="card-bd" style="display:flex;justify-content:center">${delaySVG}</div></div>
+</div>
+
+<!-- INDICADORES OPERACIONAIS -->
+<div class="sec">📊 Indicadores Operacionais</div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-bottom:9px">
+  ${[
+    ['ind-lms','lms'],['ind-cia','cia'],['ind-coa','coa'],
+    ['ind-coamod','coaMod'],['ind-spr','spr'],['ind-delay','delay']
+  ].map(([campo,chave])=>{
+    const v=F(campo),m=METAS[chave];
+    const s=v>0?avaliaMeta(v,chave):'n';
+    return kpiCard(m.label, v>0?m.fmt(v):'—', s, m.metaStr);
+  }).join('')}
+</div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-bottom:10px">
+  ${[
+    ['ind-tmec','tmec'],['ind-yms','yms'],['ind-delivery','delivery'],
+    ['ind-sla','sla'],['ind-oot','oot'],['ind-absen','absenteismo']
+  ].map(([campo,chave])=>{
+    const v=F(campo),m=METAS[chave];
+    const s=v>0?avaliaMeta(v,chave):'n';
+    return kpiCard(m.label, v>0?m.fmt(v):'—', s, m.metaStr);
+  }).join('')}
 </div>
 
 <!-- SACAS -->
@@ -789,7 +1023,7 @@ body{font-family:'Inter',sans-serif;background:#F1F3F9;color:#1A1D2B;font-size:1
 ${obs?`<div class="sec">📝 Observações</div><div class="card"><div class="card-bd" style="white-space:pre-wrap;line-height:1.7;color:#1A1D2B">${obs}</div></div>`:''}
 
 <div style="margin-top:24px;text-align:center;font-size:10px;color:#8590AD">
-  SMG1 Closing Report — Gerado em ${new Date().toLocaleString('pt-BR')} — Turno ${turno}
+  Fechamento de Turno SMG1 — Gerado em ${new Date().toLocaleString('pt-BR')} — Turno ${turno}
 </div>
 
 <div class="no-print" style="text-align:center;margin-top:20px">
@@ -860,67 +1094,212 @@ async function sendWA(){
   toast('PDF baixado. Anexe-o no WhatsApp Web.', 'cp');
 }
 
+/* ── inicializa textos de meta nos KPI cards estáticos ── */
+function initMetaLabels(){
+  // Injeta metaStr nos kpi-meta via METAS (única fonte de verdade)
+  const map={
+    'k-fag':       METAS.fag,
+    'k-ootc':      METAS.ootCiclo,
+    'k-ooto':      METAS.ootOnda,
+    'k-ootcy':     METAS.ootCicloYms,
+    'k-ootoy':     METAS.ootOndaYms,
+    'k-lms':       METAS.lms,
+    'k-cia':       METAS.cia,
+    'k-coa':       METAS.coa,
+    'k-coamod':    METAS.coaMod,
+    'k-spr':       METAS.spr,
+    'k-delay-ind': METAS.delay,
+    'k-tmec':      METAS.tmec,
+    'k-yms-ind':   METAS.yms,
+    'k-delivery':  METAS.delivery,
+    'k-sla':       METAS.sla,
+    'k-oot-ind':   METAS.oot,
+    'k-absen':     METAS.absenteismo,
+  };
+  Object.entries(map).forEach(([id,m])=>{
+    const el=$(id);if(!el)return;
+    let meta=el.querySelector('.kpi-meta');
+    if(!meta){meta=document.createElement('div');meta.className='kpi-meta';el.appendChild(meta)}
+    meta.textContent=m.metaStr;
+  });
+}
+
 /* ── save + screenshot ── */
-async function saveWithScreenshot(){
-  // 1. salva normalmente (JSON + LocalStorage)
+
+/* Monta nome base do arquivo */
+function _fileName(ext){
+  const d=collect();
+  const unidade='SMG1';
+  const turno=(d['meta-turno']||'turno').replace(/\s+/g,'_');
+  const data=(d['meta-data']||new Date().toISOString().slice(0,10));
+  const resp=(d['meta-resp']||'dashboard').trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-]/g,'');
+  return `${unidade}_${turno}_${data}_${resp}.${ext}`;
+}
+
+/*
+ * _captureDashboard()
+ *
+ * Estratégia para captura fiel da página inteira:
+ *  1. Salva e zera o scroll da janela
+ *  2. Converte position:sticky → position:relative no header e sidebar
+ *     para que o html2canvas expanda a altura real
+ *  3. Oculta overlays (toast, modal, spinner)
+ *  4. Aguarda dois frames + 400ms para gráficos Canvas terminarem de pintar
+ *  5. Captura document.body com width/height = scrollWidth/scrollHeight
+ *  6. Restaura tudo
+ */
+async function _captureDashboard(){
+  const spinner=$('cap-spinner');
+  const spinTxt=$('spin-txt');
+  const toastEl=$('toast');
+  const fmtModal=$('fmt-modal');
+
+  // — recolhe foco de qualquer input ativo
+  document.activeElement?.blur();
+  QA('input, textarea').forEach(el=>el.blur());
+
+  // — salva scroll e vai para o topo
+  const savedScrollY = window.scrollY;
+  const savedScrollX = window.scrollX;
+  window.scrollTo(0,0);
+
+  // — oculta overlays que não devem aparecer no print
+  const hide = (el, prop='visibility') => {
+    if(!el) return null;
+    const prev = el.style[prop];
+    el.style[prop] = prop==='display' ? 'none' : 'hidden';
+    return prev;
+  };
+  const prevToastVis = hide(toastEl, 'visibility');
+  const prevModalDis = hide(fmtModal, 'display');
+  const prevSpinDis  = hide(spinner,  'display');
+
+  // — converte sticky → relative para o header e side panel
+  //   (sticky faz o html2canvas achar que height = viewport)
+  const hdr  = $('hdr');
+  const side = document.querySelector('.side');
+  const savedHdrPos  = hdr  ? hdr.style.position  : null;
+  const savedSidePos = side ? side.style.position  : null;
+  const savedSideTop = side ? side.style.top       : null;
+  const savedSideH   = side ? side.style.height    : null;
+  if(hdr)  { hdr.style.position  = 'relative'; }
+  if(side) { side.style.position = 'relative'; side.style.top=''; side.style.height='auto'; }
+
+  // — mostra spinner (como position:fixed ele fica fora do body capture)
+  if(spinner){ spinner.style.display='flex'; spinner.style.visibility='visible'; }
+  if(spinTxt) spinTxt.textContent = 'Capturando dashboard…';
+
+  // — aguarda render de charts e layout
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  await new Promise(r=>setTimeout(r,450));
+
+  // — dimensões reais do documento (toda a página, não só o viewport)
+  const docW = Math.max(
+    document.body.scrollWidth,
+    document.documentElement.scrollWidth,
+    document.body.offsetWidth,
+    document.documentElement.offsetWidth,
+    1400
+  );
+  const docH = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+    document.body.offsetHeight,
+    document.documentElement.offsetHeight
+  );
+
+  let canvas;
+  try {
+    canvas = await html2canvas(document.body, {
+      scale:         2,          // alta resolução
+      useCORS:       true,
+      allowTaint:    true,
+      logging:       false,
+      scrollX:       0,
+      scrollY:       0,
+      x:             0,
+      y:             0,
+      width:         docW,
+      height:        docH,
+      windowWidth:   docW,
+      windowHeight:  docH,
+      backgroundColor: '#F1F3F9', // fundo padrão do dashboard
+      ignoreElements: el =>
+        el.id==='toast' ||
+        el.id==='fmt-modal' ||
+        el.id==='cap-spinner',
+    });
+  } finally {
+    // — restaura tudo, independente de erro
+    if(toastEl)   toastEl.style.visibility = prevToastVis  ?? '';
+    if(fmtModal)  fmtModal.style.display   = prevModalDis  ?? '';
+    if(hdr)       hdr.style.position       = savedHdrPos   ?? '';
+    if(side) {
+      side.style.position = savedSidePos ?? '';
+      side.style.top      = savedSideTop ?? '';
+      side.style.height   = savedSideH  ?? '';
+    }
+    if(spinner) { spinner.style.display='none'; spinner.style.visibility='hidden'; }
+    window.scrollTo(savedScrollX, savedScrollY);
+  }
+
+  return canvas;
+}
+
+/* Salva dados + captura no formato escolhido */
+async function saveWithScreenshot(fmt){
+  // 1. salva dados normalmente (JSON + LocalStorage)
   exportJSON();
   lsSave();
 
-  // 2. monta o nome do arquivo
-  const d      = collect();
-  const unidade= 'SMG1';
-  const turno  = (d['meta-turno']  || 'turno').replace(/\s+/g,'_');
-  const data   = (d['meta-data']   || new Date().toISOString().slice(0,10));
-  const resp   = (d['meta-resp']   || 'responsavel')
-                   .trim()
-                   .replace(/\s+/g,'_')
-                   .replace(/[^a-zA-Z0-9_\-]/g,'');
-  const pngName= `${unidade}_${turno}_${data}_${resp}.png`;
-
-  // 3. preparação visual antes da captura
-  // oculta elementos que não devem aparecer
-  const toastEl   = $('toast');
-  const selects   = QA('select');
-  const inputs    = QA('input, textarea');
-  const prevToast = toastEl ? toastEl.style.visibility : null;
-  if(toastEl) toastEl.style.visibility = 'hidden';
-  // retira o caret/cursor dos inputs
-  inputs.forEach(el=>el.blur());
-
-  // garante que tudo está renderizado
-  await new Promise(r=>setTimeout(r,120));
-
-  // 4. captura a página inteira com html2canvas
+  // 2. captura o dashboard completo
+  let canvas;
   try{
-    const canvas = await html2canvas(document.body, {
-      scale:         2,
-      useCORS:       true,
-      allowTaint:    true,
-      scrollX:       0,
-      scrollY:       0,
-      windowWidth:   document.documentElement.scrollWidth,
-      windowHeight:  document.documentElement.scrollHeight,
-      height:        document.documentElement.scrollHeight,
-      width:         document.documentElement.scrollWidth,
-      ignoreElements: el => el.id === 'toast'
-    });
-
-    // 5. baixa o PNG
-    const link = document.createElement('a');
-    link.download = pngName;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-
-    toast('Salvo! Print gerado: '+pngName,'ok');
+    canvas = await _captureDashboard();
   } catch(err){
-    console.error('Screenshot error:', err);
-    toast('Dados salvos. Erro no print.','wn');
-  } finally{
-    // restaura visibilidade
-    if(toastEl) toastEl.style.visibility = prevToast || '';
+    console.error('Capture error:', err);
+    toast('Dados salvos. Erro na captura.','wn');
+    return;
+  }
+
+  // 3. exporta no formato escolhido
+  try{
+    if(fmt==='pdf'){
+      // PNG → PDF via jsPDF
+      // canvas foi gerado em scale:2, então os pixels reais = canvas.width/2
+      const { jsPDF } = window.jspdf;
+      const MM_PER_PX = 25.4 / 96;      // 1 px CSS @ 96dpi = 0,2646 mm
+      const pdfW = (canvas.width  / 2) * MM_PER_PX;   // largura em mm
+      const pdfH = (canvas.height / 2) * MM_PER_PX;   // altura em mm
+      const orient = pdfW > pdfH ? 'l' : 'p';
+      const pdf = new jsPDF({ orientation: orient, unit: 'mm', format: [pdfW, pdfH] });
+      const imgData = canvas.toDataURL('image/png');   // PNG para máxima qualidade
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH, '', 'FAST');
+      pdf.save(_fileName('pdf'));
+      toast('PDF gerado com sucesso!', 'ok');
+    } else {
+      // PNG direto
+      const link = document.createElement('a');
+      link.download = _fileName('png');
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast('PNG salvo: ' + _fileName('png'), 'ok');
+    }
+  } catch(err){
+    console.error('Export error:', err);
+    toast('Dados salvos. Erro ao exportar.', 'wn');
   }
 }
 
+/* Abre o modal de escolha de formato */
+function openFmtModal(){
+  const modal=$('fmt-modal');
+  if(modal) modal.classList.add('open');
+}
+function closeFmtModal(){
+  const modal=$('fmt-modal');
+  if(modal) modal.classList.remove('open');
+}
 /* ── LocalStorage ── */
 const LS='smg1_v4';
 function collect(){const d={_ts:new Date().toISOString()};QA('[data-f]').forEach(el=>{d[el.dataset.f]=el.value});return d}
@@ -936,8 +1315,44 @@ function importJSON(file,cb){const r=new FileReader();r.onload=e=>{try{restore(J
 /* ── CSV ── */
 function exportCSV(){
   const d=collect(),g=k=>d[k]||'',n=k=>parseFloat(d[k])||0,plan=n('plan'),del=n('del'),pend=n('pend'),real=Math.max(0,plan-del-pend);
-  const rows=[['SMG1 CLOSING REPORT'],['Data',g('meta-data')],['Turno',g('meta-turno')],['Responsável',g('meta-resp')],[],['PERFORMANCE'],['FAG AM (%)',g('fag')],['OOT Ciclo (%)',g('ootc')],['OOT Onda (%)',g('ooto')],['OOT Ciclo YMS (%)',g('ootcy')],['OOT Onda YMS (%)',g('ootoy')],[],['TOTAIS'],['Planejado',plan],['Delay',del],['Pendentes',pend],['Concluídas',real],[],['ONDAS'],['Onda','Pendentes','Delay','OOT%','OOT YMS%'],...[['o1','1ª'],['o2','2ª'],['o3','3ª'],['o4','4ª']].map(([p,l])=>{const dl=n(`${p}-del`),pe=n(`${p}-pend`),y=n(`${p}-yms`),t=dl+pe;return[l+' Onda',pe,dl,t>0?(Math.max(0,(1-dl/t)*100)).toFixed(1):'—',y||'—']}),
-    [],['SACAS'],['Total',n('sac-tot')],['Fechadas',n('sac-fech')],['Auditar',n('sac-aud')],[],['VOLUME'],['Total',n('vol-tot')],['Backlog',n('vol-bl')],['Primeira Vez',n('vol-pv')],[],['VOLUMOSOS'],['One Bipe',n('vol-ob')],['Em Rota',n('vol-er')],[],['OBSERVAÇÕES'],[g('obs')]];
+
+  // status de meta para cada indicador operacional
+  function metaStatus(campo, chave){
+    const v=n(campo); if(!v) return '—';
+    return avaliaMeta(v,chave)==='ok'?'✅ Meta Atingida':'❌ Abaixo da Meta';
+  }
+
+  const rows=[['FECHAMENTO DE TURNO SMG1'],['Data',g('meta-data')],['Turno',g('meta-turno')],['Responsável',g('meta-resp')],[],
+    ['PERFORMANCE GERAL'],['Indicador','Valor','Meta','Status'],
+    ['FAG AM (%)',           g('fag'),    METAS.fag.metaStr,         avaliaMeta(n('fag'),'fag')==='ok'?'✅ Meta Atingida':'❌ Abaixo da Meta'],
+    ['OOT Ciclo (%)',        g('ootc'),   METAS.ootCiclo.metaStr,    avaliaMeta(n('ootc'),'ootCiclo')==='ok'?'✅ Meta Atingida':'❌ Abaixo da Meta'],
+    ['OOT Onda (%)',         g('ooto'),   METAS.ootOnda.metaStr,     avaliaMeta(n('ooto'),'ootOnda')==='ok'?'✅ Meta Atingida':'❌ Abaixo da Meta'],
+    ['OOT Ciclo YMS (%)',    g('ootcy'),  METAS.ootCicloYms.metaStr, avaliaMeta(n('ootcy'),'ootCicloYms')==='ok'?'✅ Meta Atingida':'❌ Abaixo da Meta'],
+    ['OOT Onda YMS (%)',     g('ootoy'),  METAS.ootOndaYms.metaStr,  avaliaMeta(n('ootoy'),'ootOndaYms')==='ok'?'✅ Meta Atingida':'❌ Abaixo da Meta'],
+    [],
+    ['INDICADORES OPERACIONAIS'],['Indicador','Valor','Meta','Status'],
+    ['LMS (%)',              g('ind-lms'),      METAS.lms.metaStr,         metaStatus('ind-lms','lms')],
+    ['CIA (%)',              g('ind-cia'),       METAS.cia.metaStr,         metaStatus('ind-cia','cia')],
+    ['COA (%)',              g('ind-coa'),       METAS.coa.metaStr,         metaStatus('ind-coa','coa')],
+    ['COA Mod (%)',          g('ind-coamod'),    METAS.coaMod.metaStr,      metaStatus('ind-coamod','coaMod')],
+    ['SPR LM',              g('ind-spr'),       METAS.spr.metaStr,         metaStatus('ind-spr','spr')],
+    ['Delay (%)',            g('ind-delay'),     METAS.delay.metaStr,       metaStatus('ind-delay','delay')],
+    ['TMEC/TMC (%)',         g('ind-tmec'),      METAS.tmec.metaStr,        metaStatus('ind-tmec','tmec')],
+    ['Aderência YMS (%)',    g('ind-yms'),       METAS.yms.metaStr,         metaStatus('ind-yms','yms')],
+    ['Delivery Success (%)', g('ind-delivery'),  METAS.delivery.metaStr,    metaStatus('ind-delivery','delivery')],
+    ['SLA Prob.Solver (%)',  g('ind-sla'),       METAS.sla.metaStr,         metaStatus('ind-sla','sla')],
+    ['OOT Waves 3.0 (%)',   g('ind-oot'),       METAS.oot.metaStr,         metaStatus('ind-oot','oot')],
+    ['Absenteísmo (%)',      g('ind-absen'),     METAS.absenteismo.metaStr, metaStatus('ind-absen','absenteismo')],
+    [],
+    ['TOTAIS OPERACIONAIS'],['Planejado',plan],['Delay',del],['Pendentes',pend],['Concluídas',real],
+    [],
+    ['ONDAS'],['Onda','Pendentes','Delay','OOT%','OOT YMS%'],
+    ...[['o1','1ª'],['o2','2ª'],['o3','3ª'],['o4','4ª']].map(([p,l])=>{const dl=n(`${p}-del`),pe=n(`${p}-pend`),y=n(`${p}-yms`),t=dl+pe;return[l+' Onda',pe,dl,t>0?(Math.max(0,(1-dl/t)*100)).toFixed(1):'—',y||'—']}),
+    [],['SACAS'],['Total',n('sac-tot')],['Fechadas',n('sac-fech')],['Auditar',n('sac-aud')],
+    [],['VOLUME'],['Total',n('vol-tot')],['Backlog',n('vol-bl')],['Primeira Vez',n('vol-pv')],
+    [],['VOLUMOSOS'],['One Bipe',n('vol-ob')],['Em Rota',n('vol-er')],
+    [],['OBSERVAÇÕES'],[g('obs')]];
+
   const csv='\uFEFF'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),download:`SMG1_${g('meta-turno')||'turno'}_${(g('meta-data')||'').replace(/\//g,'-')||new Date().toISOString().slice(0,10)}.csv`});
   a.click();URL.revokeObjectURL(a.href);toast('Excel exportado!','ok');
@@ -952,13 +1367,17 @@ function resetAll(){QA('[data-f]').forEach(el=>{el.value='';el.dispatchEvent(new
 
 /* ── init ── */
 document.addEventListener('DOMContentLoaded',()=>{
-  initCharts();initDark();
+  initCharts();initDark();initMetaLabels();
   const de=Q('[data-f="meta-data"]');if(de)de.value=new Date().toISOString().slice(0,10);
   const saved=lsLoad();if(saved)setTimeout(()=>restore(saved),80);
   document.addEventListener('input',e=>{if(e.target.matches('[data-f]')){calcAll();schedSave()}});
   setTimeout(calcAll,180);
   $('btn-new')?.addEventListener('click',()=>{if(confirm('Limpar todos os dados?')){resetAll();toast('Novo relatório','ok')}});
-  $('btn-save')?.addEventListener('click',saveWithScreenshot);
+  $('btn-save')?.addEventListener('click', openFmtModal);
+  $('fmt-png')?.addEventListener('click',()=>{ closeFmtModal(); saveWithScreenshot('png'); });
+  $('fmt-pdf')?.addEventListener('click',()=>{ closeFmtModal(); saveWithScreenshot('pdf'); });
+  $('fmt-cancel')?.addEventListener('click', closeFmtModal);
+  $('fmt-backdrop')?.addEventListener('click', closeFmtModal);
   $('btn-load')?.addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=e=>{const f=e.target.files[0];if(f)importJSON(f,ok=>toast(ok?'Carregado!':'Erro','ok'))};i.click()});
   $('btn-pdf')?.addEventListener('click',exportPDF);
   $('btn-xls')?.addEventListener('click',exportCSV);
