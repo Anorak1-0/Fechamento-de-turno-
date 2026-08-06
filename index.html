@@ -85,36 +85,113 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 a{text-decoration:none}
 
-/* HEADER */
-#hdr{background:var(--blue);position:sticky;top:0;z-index:300;box-shadow:0 2px 20px rgba(10,12,50,.45)}
-.hdr-r1{display:flex;align-items:center;gap:14px;padding:10px 28px;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap}
+/* HEADER — tema Mercado Livre (fundo amarelo) */
+#hdr{
+  background:#FFE600;
+  position:sticky;top:0;z-index:300;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
+}
+.hdr-row{
+  display:flex;align-items:center;
+  gap:6px;
+  padding:5px 16px;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+}
+.hdr-row::-webkit-scrollbar{height:0}
+
+/* Logo — ícone azul escuro sobre amarelo */
 .logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo-mark{width:40px;height:40px;background:var(--yellow);border-radius:var(--r-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:11px;line-height:1.1;color:var(--blue);letter-spacing:-.3px;flex-shrink:0}
-.logo-txt{line-height:1.15}
-.logo-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:.1px}
-.logo-sub{font-size:10px;font-weight:500;color:rgba(255,255,255,.42);text-transform:uppercase;letter-spacing:1px}
-.hdr-meta{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap}
-.meta-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-sm);padding:5px 10px}
-.meta-pill label{font-size:9px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
-.meta-pill input,.meta-pill select{background:transparent;border:none;outline:none;color:#fff;font-size:13px;font-weight:600;min-width:80px;cursor:pointer;color-scheme:dark}
-.meta-pill select option{background:#1A1F71}
-.hdr-save{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.35);white-space:nowrap}
-.save-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2.8s infinite}
-@keyframes pulse{0%,100%{opacity:1}55%{opacity:.2}}
-.hdr-r2{display:flex;align-items:center;gap:5px;padding:7px 28px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .14s;white-space:nowrap}
+.logo-mark{
+  width:36px;height:36px;
+  background:#1A1F71;
+  border-radius:var(--r-sm);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:900;font-size:10px;line-height:1.1;
+  color:#FFE600;letter-spacing:-.3px;flex-shrink:0;
+}
+.logo-txt{line-height:1.1}
+.logo-name{font-size:13px;font-weight:800;color:#1A1F71}
+.logo-sub{font-size:9px;font-weight:600;color:rgba(26,31,113,.55);text-transform:uppercase;letter-spacing:.8px}
+
+/* divisor vertical */
+.hdr-div{width:1px;height:26px;background:rgba(26,31,113,.2);flex-shrink:0;margin:0 2px}
+
+/* meta-pills — fundo levemente mais escuro que o amarelo */
+.hdr-meta{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.meta-pill{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(26,31,113,.08);
+  border:1px solid rgba(26,31,113,.15);
+  border-radius:var(--r-sm);padding:4px 8px;
+}
+.meta-pill label{
+  font-size:9px;font-weight:700;
+  color:rgba(26,31,113,.55);
+  text-transform:uppercase;letter-spacing:.7px;
+  white-space:nowrap;flex-shrink:0;
+}
+.meta-pill input,.meta-pill select{
+  background:transparent;border:none;outline:none;
+  color:#1A1F71;font-size:12px;font-weight:700;
+  min-width:64px;cursor:pointer;
+}
+.meta-pill select option{background:#FFE600;color:#1A1F71}
+
+/* botões — fundo branco/escuro sobre amarelo */
+.hdr-actions{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 10px;border-radius:var(--r-sm);
+  font-size:12px;font-weight:700;
+  cursor:pointer;border:none;
+  transition:all .14s;white-space:nowrap;flex-shrink:0;
+}
 .btn svg{width:13px;height:13px;flex-shrink:0}
-.btn-ghost{background:rgba(255,255,255,.09);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.13)}
-.btn-ghost:hover{background:rgba(255,255,255,.16)}
-.btn-yellow{background:var(--yellow);color:var(--blue);font-weight:700}
-.btn-yellow:hover{background:#EDD300}
-.btn-del{background:rgba(224,32,32,.12);color:#FF7070;border:1px solid rgba(224,32,32,.22)}
-.btn-del:hover{background:var(--red);color:#fff}
-.sep{width:1px;height:18px;background:rgba(255,255,255,.12);flex-shrink:0}
+/* ghost = branco translúcido — legível sobre amarelo */
+.btn-ghost{
+  background:rgba(255,255,255,.55);
+  color:#1A1F71;
+  border:1px solid rgba(26,31,113,.18);
+}
+.btn-ghost:hover{background:rgba(255,255,255,.85)}
+/* yellow = azul escuro — contraste máximo sobre amarelo */
+.btn-yellow{background:#1A1F71;color:#FFE600;font-weight:700}
+.btn-yellow:hover{background:#252C8A}
+/* del = vermelho */
+.btn-del{
+  background:rgba(224,32,32,.12);color:#C0000A;
+  border:1px solid rgba(200,0,10,.22);
+}
+.btn-del:hover{background:#E02020;color:#fff}
+.sep{width:1px;height:18px;background:rgba(26,31,113,.2);flex-shrink:0;margin:0 1px}
+
+/* Botões secundários: apenas ícone, sem texto visível */
+#btn-load span, #btn-xls span, #btn-dark span,
+#btn-load .btn-txt, #btn-xls .btn-txt, #btn-dark .btn-txt { display:none }
+/* Hack CSS: oculta o nó de texto dos botões secundários sem alterar HTML */
+#btn-load, #btn-xls, #btn-dark {
+  font-size: 0;        /* esconde o texto */
+  padding: 5px 8px;   /* padding menor pois não tem texto */
+}
+#btn-load svg, #btn-xls svg, #btn-dark svg {
+  font-size: 13px;     /* restaura tamanho do ícone */
+  width: 14px; height: 14px;
+}
+
+/* save indicator — compacto, só o dot */
+.hdr-save{
+  margin-left:auto;flex-shrink:0;
+  display:flex;align-items:center;gap:4px;
+  font-size:10px;color:rgba(26,31,113,.5);white-space:nowrap;
+}
+.hdr-save span { display:none } /* esconde "Sincronizado", mantém só o dot */
+.save-dot{width:8px;height:8px;background:#00A650;border-radius:50%;animation:pulse 2.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}55%{opacity:.2}}
 
 /* LAYOUT */
-.shell{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 330px;min-height:calc(100vh - 93px)}
-.main{padding:20px 20px 40px 26px;display:flex;flex-direction:column;gap:14px}
+.shell{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 330px;min-height:calc(100vh - 50px)}
+.main{padding:14px 16px 32px 18px;display:flex;flex-direction:column;gap:10px}
 
 /* SECTION LABEL */
 .sec{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1.3px;display:flex;align-items:center;gap:8px;padding-top:6px}
@@ -123,87 +200,180 @@ a{text-decoration:none}
 /* CARD */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh1);overflow:hidden;transition:box-shadow .2s}
 .card:hover{box-shadow:var(--sh2)}
-.card-hd{display:flex;align-items:center;gap:9px;padding:11px 15px;border-bottom:1px solid var(--border)}
-.c-ico{width:28px;height:28px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.c-ico svg{width:14px;height:14px}
+.card-hd{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--border)}
+.c-ico{width:26px;height:26px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-ico svg{width:13px;height:13px}
 .ico-y{background:var(--yellow-lt);color:#9A7A00}.ico-b{background:var(--blue-lt);color:var(--blue)}
 .ico-g{background:var(--green-lt);color:var(--green)}.ico-r{background:var(--red-lt);color:var(--red)}
 .ico-o{background:var(--orange-lt);color:var(--orange)}.ico-n{background:var(--bg);color:var(--text-3)}
 [data-theme="dark"] .ico-y{color:var(--yellow)}[data-theme="dark"] .ico-b{color:#8B9CF0}
 [data-theme="dark"] .ico-g{color:#3DCC80}[data-theme="dark"] .ico-r{color:#FF6B6B}
 [data-theme="dark"] .ico-o{color:#FFB070}
-.c-title{font-size:12px;font-weight:700;color:var(--text)}.c-sub{font-size:11px;color:var(--text-3);margin-left:auto}
-.card-bd{padding:14px 15px}
+.c-title{font-size:12px;font-weight:700;color:var(--text)}.c-sub{font-size:10px;color:var(--text-3);margin-left:auto}
+.card-bd{padding:11px 13px}
 
-/* FORM */
-.fld{display:flex;flex-direction:column;gap:3px}
-.lbl{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
-.inp{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:14px;font-weight:600;color:var(--text);outline:none;width:100%;transition:border-color .14s,box-shadow .14s,background .14s}
-.inp:focus{border-color:var(--blue-mid);background:var(--surface);box-shadow:0 0 0 3px rgba(45,52,128,.09)}
+/* FORM — campos menores e compactos */
+.fld{display:flex;flex-direction:column;gap:2px}
+.lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+.inp{
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:5px 9px;          /* menor que antes (era 7px 10px) */
+  font-size:13px;font-weight:600;color:var(--text);
+  outline:none;width:100%;
+  transition:border-color .14s,box-shadow .14s,background .14s;
+}
+.inp:focus{border-color:var(--blue-mid);background:var(--surface);box-shadow:0 0 0 2px rgba(45,52,128,.09)}
 [data-theme="dark"] .inp{background:rgba(255,255,255,.05);color:var(--text)}
 [data-theme="dark"] .inp:focus{background:rgba(255,255,255,.08)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
-.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 
-/* KPI */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;position:relative;overflow:hidden;box-shadow:var(--sh1);transition:box-shadow .2s,transform .15s}
+/* GRIDS — responsivos por default */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}  /* quebra no mobile */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* KPI — mais compactos */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 11px;position:relative;overflow:hidden;box-shadow:var(--sh1);transition:box-shadow .2s,transform .15s}
 .kpi:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0;background:var(--border);transition:background .3s}
 .kpi.ok::before{background:var(--green)}.kpi.warn::before{background:var(--yellow-dk)}.kpi.bad::before{background:var(--red)}
 .kpi-bg{position:absolute;right:6px;top:50%;transform:translateY(-50%);opacity:.04;pointer-events:none}
-.kpi-bg svg{width:44px;height:44px}[data-theme="dark"] .kpi-bg{opacity:.07}
-.kpi-lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
-.kpi-val{font-size:22px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;margin-bottom:5px}
-.kpi-val.lg{font-size:26px}
-.kpi-tag{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px}
+.kpi-bg svg{width:38px;height:38px}[data-theme="dark"] .kpi-bg{opacity:.07}
+.kpi-lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.kpi-val{font-size:20px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;margin-bottom:4px}
+.kpi-val.lg{font-size:22px}
+.kpi-tag{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px}
 .tg-ok{background:var(--green-lt);color:var(--green)}.tg-warn{background:var(--yellow-lt);color:#8A6A00}
 .tg-bad{background:var(--red-lt);color:var(--red)}.tg-n{background:var(--bg);color:var(--text-3)}
 [data-theme="dark"] .tg-ok{background:rgba(0,166,80,.14);color:#3DCC80}
 [data-theme="dark"] .tg-warn{background:rgba(255,230,0,.10);color:var(--yellow)}
 [data-theme="dark"] .tg-bad{background:rgba(224,32,32,.14);color:#FF6B6B}
 [data-theme="dark"] .tg-n{background:rgba(255,255,255,.05);color:var(--text-3)}
-.kpi-meta{font-size:10px;color:var(--text-3);margin-top:3px}
+.kpi-meta{font-size:9px;color:var(--text-3);margin-top:2px}
 
 /* STAT ROW */
-.sr{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)}
 .sr:last-child{border-bottom:none}
 .sr-l{font-size:11px;color:var(--text-3);font-weight:500}.sr-r{font-size:12px;font-weight:700;color:var(--text)}
 
 /* PROGRESS */
-.pg{background:var(--bg);border-radius:99px;height:5px;overflow:hidden;margin-top:4px}
+.pg{background:var(--bg);border-radius:99px;height:4px;overflow:hidden;margin-top:3px}
 .pgf{height:100%;border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1)}
 .g{background:linear-gradient(90deg,#00A650,#00D46A)}.r{background:linear-gradient(90deg,#E02020,#FF4444)}
 .y{background:linear-gradient(90deg,#C8A800,#FFD000)}.b{background:linear-gradient(90deg,#3D4DB7,#7B86E8)}
 
-/* ONDAS */
+/* ONDAS — tema padrão do dashboard */
 .ondas{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.onda{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh1)}
-.onda-hd{background:var(--blue);padding:8px 11px;display:flex;align-items:center;justify-content:space-between}
-.onda-name{font-size:12px;font-weight:700;color:#fff}
+
+.onda{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+  box-shadow:var(--sh1);
+  transition:box-shadow .2s,transform .15s;
+  min-width:0;
+}
+.onda:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+
+/* Header */
+.onda-hd{
+  background:var(--blue);
+  padding:0 11px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  height:36px;min-height:36px;
+}
+.onda-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:.1px}
 .onda-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px}
-.ob-n{background:rgba(255,255,255,.15);color:rgba(255,255,255,.65)}
-.ob-ok{background:var(--green);color:#fff}.ob-warn{background:var(--yellow);color:var(--blue)}.ob-bad{background:var(--red);color:#fff}
-.onda-bd{padding:10px 11px;display:flex;flex-direction:column;gap:7px}
+.ob-n   {background:rgba(255,255,255,.15);color:rgba(255,255,255,.65)}
+.ob-ok  {background:var(--green);color:#fff}
+.ob-warn{background:var(--yellow);color:var(--blue)}
+.ob-bad {background:var(--red);color:#fff}
+
+/* Body */
+.onda-bd{
+  padding:10px 11px;
+  display:flex;flex-direction:column;gap:7px;
+}
+
+/* Linha 1: Pendentes + Delay */
 .onda-inps{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .onda-fld{display:flex;flex-direction:column;gap:2px}
-.onda-lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
-.onda-inp{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:13px;font-weight:700;color:var(--text);outline:none;width:100%;transition:border-color .14s,box-shadow .14s;-moz-appearance:textfield}
-.onda-inp:focus{border-color:var(--blue-mid);box-shadow:0 0 0 2px rgba(45,52,128,.1)}
-[data-theme="dark"] .onda-inp{background:rgba(255,255,255,.05)}
+.onda-lbl{
+  font-size:9px;font-weight:700;
+  color:var(--text-3);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+
+/* Inputs — mesmo padrão do .inp do dashboard */
+.onda-inp{
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:5px 8px;
+  height:32px;line-height:32px;
+  font-size:13px;font-weight:700;
+  color:var(--text);
+  outline:none;width:100%;
+  transition:border-color .14s,box-shadow .14s;
+  -moz-appearance:textfield;font-family:inherit;
+}
+.onda-inp::placeholder{color:var(--text-3);font-weight:500}
+.onda-inp:focus{
+  border-color:var(--blue-mid);
+  background:var(--surface);
+  box-shadow:0 0 0 2px rgba(45,52,128,.1);
+}
+[data-theme="dark"] .onda-inp{background:rgba(255,255,255,.05);color:var(--text)}
 .onda-inp::-webkit-outer-spin-button,.onda-inp::-webkit-inner-spin-button{-webkit-appearance:none}
-.onda-div{height:1px;background:var(--border)}
-.onda-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.onda-stat{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 6px;text-align:center}
-[data-theme="dark"] .onda-stat{background:rgba(255,255,255,.04)}
-.os-val{font-size:14px;font-weight:800;color:var(--text);line-height:1}
-.os-lbl{font-size:8px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+
+/* Linha 3: Mini KPIs lado a lado */
+.onda-kpis{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.onda-kpi{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:5px 6px;
+  display:flex;flex-direction:column;align-items:center;
+  min-height:44px;gap:2px;
+  text-align:center;
+}
+[data-theme="dark"] .onda-kpi{background:rgba(255,255,255,.04)}
+
+/* OOT % — input transparente estilizado como KPI */
+.o-oot{
+  background:transparent;border:none;outline:none;
+  font-size:15px;font-weight:800;color:var(--text);
+  text-align:center;width:100%;line-height:1.3;
+  -moz-appearance:textfield;font-family:inherit;cursor:text;
+}
+.o-oot:focus{color:var(--blue)}
+.o-oot::placeholder{color:var(--text-3);font-size:13px;font-weight:500}
+.o-oot::-webkit-outer-spin-button,.o-oot::-webkit-inner-spin-button{-webkit-appearance:none}
+
+/* YMS % — div display, espelha o input de cima */
+.o-yms{
+  font-size:15px;font-weight:800;color:var(--text);
+  text-align:center;width:100%;line-height:1.3;
+}
+.onda-kpi-lbl{
+  font-size:8px;font-weight:700;
+  color:var(--text-3);
+  text-transform:uppercase;letter-spacing:.4px;
+}
+
+
+/* divisor (mantido por compatibilidade, agora sem uso visual) */
+.onda-div{display:none}
+.onda-stats{display:none}
+
 .c-ok{color:var(--green)!important}.c-warn{color:var(--yellow-dk)!important}.c-bad{color:var(--red)!important}
 [data-theme="dark"] .c-warn{color:var(--yellow)!important}
-.onda-strip{display:flex;gap:7px;flex-wrap:wrap}
-.strip-pill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:3px 11px;font-size:11px;font-weight:600;color:var(--text-3)}
+.onda-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.strip-pill{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:2px 9px;font-size:10px;font-weight:600;color:var(--text-3)}
 .strip-pill b{color:var(--text)}
 
 /* CHART */
@@ -219,7 +389,7 @@ a{text-decoration:none}
 [data-theme="dark"] .ta{background:rgba(255,255,255,.05)}
 
 /* SIDE */
-.side{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:93px;height:calc(100vh - 93px);overflow:hidden}
+.side{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:50px;height:calc(100vh - 50px);overflow:hidden}
 .side-hd{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .side-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)}
 .wa-ico{width:26px;height:26px;background:#25D366;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
@@ -238,10 +408,56 @@ a{text-decoration:none}
 #toast.on{opacity:1;transform:translateY(0)}
 #toast svg{width:13px;height:13px}
 
-/* RESPONSIVE */
-@media(max-width:1100px){.shell{grid-template-columns:1fr}.side{position:relative;top:0;height:auto;border-left:none;border-top:1px solid var(--border);overflow:visible}.wa-scroll{max-height:260px}.ondas{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:768px){.hdr-r1{padding:8px 14px}.hdr-r2{padding:6px 14px}.main{padding:12px 12px 32px}.hdr-meta{display:none}.kpis{grid-template-columns:1fr 1fr}.ondas{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.g5{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.ondas{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+/* RESPONSIVE — mobile-first, breakpoints completos */
+
+/* ≤1100px — tablet landscape / desktop pequeno */
+@media(max-width:1100px){
+  .shell{grid-template-columns:1fr}
+  .side{position:relative;top:0;height:auto;border-left:none;border-top:1px solid var(--border);overflow:visible}
+  .wa-scroll{max-height:260px}
+  /* ondas: mantém 4 colunas — sem sidebar há espaço suficiente */
+  .ondas{grid-template-columns:repeat(4,1fr)}
+  .kpis{grid-template-columns:repeat(3,1fr)}
+  .g5{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ≤768px — tablet portrait / mobile grande */
+@media(max-width:768px){
+  .hdr-row{padding:5px 10px;gap:6px}
+  .hdr-meta{display:none}
+  .hdr-div{display:none}
+  .main{padding:10px 10px 28px}
+  .kpis{grid-template-columns:1fr 1fr}
+  /* ondas: ainda 4 colunas em tablet landscape */
+  .ondas{grid-template-columns:repeat(4,1fr)}
+  .two{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .g5{grid-template-columns:1fr 1fr}
+  .kpi-val{font-size:18px}
+  .kpi-val.lg{font-size:20px}
+  .card-bd{padding:10px 11px}
+}
+
+/* ≤600px — mobile médio: ondas quebram para 2 colunas */
+@media(max-width:600px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr}
+  .g5{grid-template-columns:1fr 1fr}
+  .ondas{grid-template-columns:1fr 1fr}
+  .two{grid-template-columns:1fr}
+  #btn-load, #btn-xls, #btn-dark{display:none}
+}
+
+/* ≤420px — mobile pequeno: ondas em 1 coluna */
+@media(max-width:420px){
+  .ondas{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .g5{grid-template-columns:1fr 1fr}
+  .hdr-row{gap:4px}
+  .btn{padding:4px 8px;font-size:11px}
+}
 
 /* ── modal formato captura ── */
 #fmt-modal{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center}
@@ -263,36 +479,249 @@ a{text-decoration:none}
 .spin-ring{width:44px;height:44px;border:4px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin-txt{font-size:13px;font-weight:600;color:#fff;font-family:'Inter',sans-serif}
+/* ── Aprovação de Pedidos ── */
+.aprov-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  box-shadow:var(--sh1);
+  overflow:hidden;
+  transition:box-shadow .2s;
+}
+.aprov-card:hover{box-shadow:var(--sh2)}
+
+.aprov-hd{
+  display:flex;align-items:center;gap:9px;
+  padding:11px 15px;
+  border-bottom:1px solid var(--border);
+}
+.aprov-bd{padding:12px 15px}
+
+/* estado OK — todos aprovados */
+.aprov-ok{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;
+  color:var(--green);
+}
+.aprov-ok svg{width:16px;height:16px;flex-shrink:0}
+
+/* estado pendente */
+.aprov-pending{display:flex;flex-direction:column;gap:8px}
+.aprov-label{
+  font-size:11px;font-weight:600;color:var(--text-3);
+  text-transform:uppercase;letter-spacing:.6px;
+}
+.aprov-ids{
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+.aprov-chip{
+  display:inline-flex;align-items:center;
+  background:var(--red-lt);
+  border:1px solid rgba(224,32,32,.18);
+  color:var(--red);
+  font-size:11px;font-weight:700;
+  padding:3px 9px;border-radius:99px;
+  letter-spacing:.2px;
+  font-family:var(--font);
+}
+[data-theme="dark"] .aprov-chip{
+  background:rgba(224,32,32,.14);
+  border-color:rgba(224,32,32,.25);
+  color:#FF6B6B;
+}
+.aprov-more{
+  font-size:11px;font-weight:600;
+  color:var(--text-3);
+  align-self:center;
+  white-space:nowrap;
+}
+/* textarea de IDs */
+.aprov-ta{
+  width:100%;
+  min-height:54px;max-height:110px;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:8px 11px;
+  font-size:12px;font-weight:600;
+  color:var(--text);
+  font-family:var(--font);
+  resize:vertical;outline:none;
+  line-height:1.6;
+  transition:border-color .14s,box-shadow .14s;
+}
+.aprov-ta:focus{
+  border-color:var(--blue-mid);
+  background:var(--surface);
+  box-shadow:0 0 0 3px rgba(45,52,128,.09);
+}
+[data-theme="dark"] .aprov-ta{background:rgba(255,255,255,.05)}
+.aprov-ta::placeholder{color:var(--text-3);font-weight:400}
+
+/* ──────────────────────────────────────────
+   PDF EXPORT — loading overlay
+   ────────────────────────────────────────── */
+#pdf-loading{
+  display:none;position:fixed;inset:0;z-index:99999;
+  background:rgba(10,12,30,.75);
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;
+}
+#pdf-loading.on{display:flex}
+.pdf-spinner{
+  width:52px;height:52px;
+  border:5px solid rgba(255,230,0,.2);
+  border-top-color:#FFE600;
+  border-radius:50%;
+  animation:spin .75s linear infinite; /* reutiliza @keyframes spin já existente */
+}
+.pdf-loading-txt{
+  font-size:15px;font-weight:700;color:#fff;
+  font-family:'Inter',sans-serif;letter-spacing:.2px;
+}
+.pdf-loading-sub{
+  font-size:11px;font-weight:500;
+  color:rgba(255,255,255,.5);
+  font-family:'Inter',sans-serif;
+}
+
+/* ──────────────────────────────────────────
+   @media print — CSS específico para impressão
+   Oculta controles, ajusta layout para papel
+   ────────────────────────────────────────── */
+@media print{
+  #hdr,
+  .side,
+  #toast,
+  #fmt-modal,
+  #cap-spinner,
+  #pdf-loading{
+    display:none !important;
+  }
+  .shell{display:block !important;max-width:100% !important}
+  .main{padding:0 !important}
+  /* evita quebra de página dentro de cards */
+  .card,.kpi,.onda,.aprov-card,.two,.ondas,.kpis{
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  body,html{background:#fff !important}
+  /* força cores no print (sem -webkit-print-color-adjust padrão) */
+  *{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+}
+/* ── Mascote Lobo SMG1 ── */
+.mascote{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;
+  background:rgba(26,31,113,.12);
+  border:1px solid rgba(26,31,113,.2);
+  border-radius:var(--r-sm);
+  padding:3px 8px 3px 3px;
+}
+.mascote-svg{
+  width:32px;height:32px;flex-shrink:0;
+}
+.mascote-txt{
+  display:flex;flex-direction:column;line-height:1.1;
+}
+.mascote-nome{
+  font-size:11px;font-weight:900;color:#1A1F71;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.mascote-sub{
+  font-size:8px;font-weight:700;color:rgba(26,31,113,.55);
+  text-transform:uppercase;letter-spacing:.6px;
+}
 </style>
-</head>
-<body>
 
 <header id="hdr">
-  <div class="hdr-r1">
+  <div class="hdr-row">
+
     <div class="logo">
-      <div class="logo-mark">SMG<br>1</div>
+      <!-- Ícone estilo MELI: aperto de mão em fundo azul -->
+      <div class="logo-mark">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+          <path d="M8 22c0 0 2-2 5-2s4 2 7 2 4-2 7-2 5 2 5 2" stroke="#FFE600" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M13 18l3-5 4 3 4-5 3 4" stroke="#FFE600" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="15" r="5" stroke="#FFE600" stroke-width="2"/>
+          <path d="M15 26c1 2 3 3 5 3s4-1 5-3" stroke="#FFE600" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div class="logo-txt">
         <div class="logo-name">Fechamento de Turno</div>
-        <div class="logo-sub">SMG1</div>
+        <div class="logo-sub">SMG1 · Dashboard Operacional</div>
       </div>
     </div>
+
+    <div class="hdr-div"></div>
+
     <div class="hdr-meta">
       <div class="meta-pill"><label>Data</label><input type="date" data-f="meta-data"/></div>
       <div class="meta-pill"><label>Turno</label><select data-f="meta-turno"><option value="">—</option><option>AM1</option><option>AM2</option><option>PM1</option><option>PM2</option><option>N1</option><option>N2</option></select></div>
-      <div class="meta-pill"><label>Responsável</label><input type="text" data-f="meta-resp" placeholder="Nome do TL" style="min-width:120px"/></div>
+      <div class="meta-pill"><label>Responsável</label><input type="text" data-f="meta-resp" placeholder="Nome do TL" style="min-width:100px"/></div>
     </div>
+
+    <div class="hdr-div"></div>
+
+    <div class="hdr-actions">
+      <button class="btn btn-del"    id="btn-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Novo</button>
+      <button class="btn btn-ghost"  id="btn-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Salvar</button>
+      <button class="btn btn-ghost"  id="btn-load"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Carregar</button>
+      <div class="sep"></div>
+      <button class="btn btn-yellow" id="btn-wa-hdr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>WhatsApp</button>
+      <button class="btn btn-ghost"  id="btn-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>PDF</button>
+      <button class="btn btn-ghost"  id="btn-xls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9M15 21V9"/></svg>Excel</button>
+      <div class="sep"></div>
+      <button class="btn btn-ghost"  id="btn-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Escuro</button>
+    </div>
+
     <div class="hdr-save"><div class="save-dot"></div><span id="st">Sincronizado</span></div>
-  </div>
-  <div class="hdr-r2">
-    <button class="btn btn-del" id="btn-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Novo</button>
-    <button class="btn btn-ghost" id="btn-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Salvar</button>
-    <button class="btn btn-ghost" id="btn-load"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Carregar</button>
-    <div class="sep"></div>
-    <button class="btn btn-yellow" id="btn-wa-hdr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>WhatsApp</button>
-    <button class="btn btn-ghost" id="btn-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>PDF</button>
-    <button class="btn btn-ghost" id="btn-xls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9M15 21V9"/></svg>Excel</button>
-    <div class="sep"></div>
-    <button class="btn btn-ghost" id="btn-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Escuro</button>
+
+    <!-- Mascote Lobo SMG1 -->
+    <div class="mascote" title="Mascote SMG1">
+      <svg class="mascote-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- fundo circular -->
+        <circle cx="50" cy="50" r="48" fill="#1A1F71"/>
+        <!-- orelhas -->
+        <polygon points="18,20 28,48 8,44" fill="#2D3480"/>
+        <polygon points="22,22 30,46 12,44" fill="#FFE600"/>
+        <polygon points="82,20 72,48 92,44" fill="#2D3480"/>
+        <polygon points="78,22 70,46 88,44" fill="#FFE600"/>
+        <!-- cabeça -->
+        <ellipse cx="50" cy="58" rx="30" ry="26" fill="#2D3480"/>
+        <!-- focinho -->
+        <ellipse cx="50" cy="68" rx="16" ry="11" fill="#8590AD"/>
+        <ellipse cx="50" cy="66" rx="13" ry="9" fill="#A8AECE"/>
+        <!-- nariz -->
+        <ellipse cx="50" cy="60" rx="6" ry="4" fill="#1A1D2B"/>
+        <ellipse cx="48" cy="59" rx="2" ry="1.5" fill="rgba(255,255,255,.25)"/>
+        <!-- olhos -->
+        <ellipse cx="35" cy="52" rx="6" ry="7" fill="#FFE600"/>
+        <ellipse cx="65" cy="52" rx="6" ry="7" fill="#FFE600"/>
+        <ellipse cx="35" cy="53" rx="3.5" ry="5" fill="#1A1D2B"/>
+        <ellipse cx="65" cy="53" rx="3.5" ry="5" fill="#1A1D2B"/>
+        <circle cx="33" cy="51" r="1.2" fill="rgba(255,255,255,.6)"/>
+        <circle cx="63" cy="51" r="1.2" fill="rgba(255,255,255,.6)"/>
+        <!-- sobrancelhas / marcas faciais -->
+        <path d="M29 47 Q35 43 41 46" stroke="#FFE600" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M59 46 Q65 43 71 47" stroke="#FFE600" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- sorriso / focinho inferior -->
+        <path d="M44 72 Q50 77 56 72" stroke="#1A1D2B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- divisor focinho -->
+        <line x1="50" y1="63" x2="50" y2="70" stroke="#8590AD" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- presas -->
+        <polygon points="45,72 43,79 47,72" fill="white" opacity=".9"/>
+        <polygon points="55,72 53,72 57,79" fill="white" opacity=".9"/>
+        <!-- testa / listras -->
+        <path d="M42 38 Q50 34 58 38" stroke="#FFE600" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"/>
+      </svg>
+      <div class="mascote-txt">
+        <span class="mascote-nome">SMG1</span>
+        <span class="mascote-sub">Lobos</span>
+      </div>
+    </div>
+
   </div>
 </header>
 
@@ -354,12 +783,34 @@ a{text-decoration:none}
   <div class="kpi" id="k-pend"><div class="kpi-lbl">Pendentes</div><div class="kpi-val lg" id="kv-pend">—</div><span class="kpi-tag tg-n" id="kt-pend">—</span></div>
 </div>
 
+<!-- ── Aprovação de Pedidos ── -->
+<div class="aprov-card">
+  <div class="aprov-hd">
+    <div class="c-ico ico-y">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    </div>
+    <span class="c-title">Aprovação de Pedidos</span>
+    <span class="c-sub" id="aprov-count-label"></span>
+  </div>
+  <div class="aprov-bd">
+    <!-- Input de IDs -->
+    <textarea
+      class="aprov-ta"
+      data-f="aprov-ids"
+      id="aprov-input"
+      placeholder="Cole ou digite os IDs pendentes de aprovação, separados por vírgula, espaço ou quebra de linha.&#10;Ex: 123456, 123789, 123999"
+    ></textarea>
+    <!-- Prévia dinâmica -->
+    <div id="aprov-preview" style="margin-top:10px"></div>
+  </div>
+</div>
+
 <div class="sec">🚚 Carros Atrasados por Onda</div>
 <div class="ondas">
-  <div class="onda" data-onda="o1"><div class="onda-hd"><span class="onda-name">1ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o1-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o1-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o1-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o1-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o1-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
-  <div class="onda" data-onda="o2"><div class="onda-hd"><span class="onda-name">2ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o2-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o2-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o2-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o2-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o2-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
-  <div class="onda" data-onda="o3"><div class="onda-hd"><span class="onda-name">3ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o3-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o3-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o3-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o3-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o3-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
-  <div class="onda" data-onda="o4"><div class="onda-hd"><span class="onda-name">4ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o4-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o4-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o4-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-div"></div><div class="onda-stats"><div class="onda-stat"><div class="onda-lbl">OOT %</div><input type="number" class="onda-inp o-oot" data-f="o4-oot" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-stat"><div class="onda-lbl">YMS %</div><input type="number" class="onda-inp o-yms" data-f="o4-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div></div></div></div>
+  <div class="onda" data-onda="o1"><div class="onda-hd"><span class="onda-name">1ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o1-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o1-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o1-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-kpis"><div class="onda-kpi"><input type="number" class="o-oot" data-f="o1-oot" placeholder="—" step=".1" min="0" max="100"/><span class="onda-kpi-lbl">OOT %</span></div><div class="onda-kpi"><div class="o-yms">—</div><span class="onda-kpi-lbl">YMS %</span></div></div></div></div>
+  <div class="onda" data-onda="o2"><div class="onda-hd"><span class="onda-name">2ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o2-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o2-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o2-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-kpis"><div class="onda-kpi"><input type="number" class="o-oot" data-f="o2-oot" placeholder="—" step=".1" min="0" max="100"/><span class="onda-kpi-lbl">OOT %</span></div><div class="onda-kpi"><div class="o-yms">—</div><span class="onda-kpi-lbl">YMS %</span></div></div></div></div>
+  <div class="onda" data-onda="o3"><div class="onda-hd"><span class="onda-name">3ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o3-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o3-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o3-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-kpis"><div class="onda-kpi"><input type="number" class="o-oot" data-f="o3-oot" placeholder="—" step=".1" min="0" max="100"/><span class="onda-kpi-lbl">OOT %</span></div><div class="onda-kpi"><div class="o-yms">—</div><span class="onda-kpi-lbl">YMS %</span></div></div></div></div>
+  <div class="onda" data-onda="o4"><div class="onda-hd"><span class="onda-name">4ª Onda</span><span class="onda-badge ob-n">—</span></div><div class="onda-bd"><div class="onda-inps"><div class="onda-fld"><span class="onda-lbl">Pendentes</span><input type="number" class="onda-inp" data-f="o4-pend" placeholder="0" min="0"/></div><div class="onda-fld"><span class="onda-lbl">Delay</span><input type="number" class="onda-inp" data-f="o4-del" placeholder="0" min="0"/></div></div><div class="onda-fld"><span class="onda-lbl">OOT YMS (%)</span><input type="number" class="onda-inp" data-f="o4-oot-yms" placeholder="0.0" step=".1" min="0" max="100"/></div><div class="onda-kpis"><div class="onda-kpi"><input type="number" class="o-oot" data-f="o4-oot" placeholder="—" step=".1" min="0" max="100"/><span class="onda-kpi-lbl">OOT %</span></div><div class="onda-kpi"><div class="o-yms">—</div><span class="onda-kpi-lbl">YMS %</span></div></div></div></div>
 </div>
 <div class="onda-strip"><div class="strip-pill">Total delay: <b id="o-del-tot">0</b></div><div class="strip-pill">Total pendentes: <b id="o-pend-tot">0</b></div></div>
 
@@ -505,6 +956,13 @@ a{text-decoration:none}
   <div class="spin-txt" id="spin-txt">Gerando captura…</div>
 </div>
 
+<!-- ── PDF loading overlay ── -->
+<div id="pdf-loading">
+  <div class="pdf-spinner"></div>
+  <div class="pdf-loading-txt">Gerando relatório PDF…</div>
+  <div class="pdf-loading-sub">Aguarde, capturando gráficos e layout…</div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -559,7 +1017,56 @@ function initCharts(){
 }
 
 /* ── calcs ── */
-function calcAll(){calcPerf();calcTotais();calcOndas();calcSacas();calcVol();calcVolumos();calcIndicadores();genWA()}
+function calcAll(){calcPerf();calcTotais();calcOndas();calcSacas();calcVol();calcVolumos();calcIndicadores();calcAprovacao();genWA()}
+
+/* ── Aprovação de Pedidos ── */
+const APROV_MAX_VISIBLE = 5; // máximo de chips exibidos antes de "… e mais X"
+
+function parseIds(raw){
+  // aceita vírgula, ponto-e-vírgula, espaço, tab ou quebra de linha como separadores
+  return raw
+    .split(/[\s,;\n\r]+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+}
+
+function calcAprovacao(){
+  const raw  = V('aprov-ids');
+  const ids  = parseIds(raw);
+  const preview  = $('aprov-preview');
+  const countLbl = $('aprov-count-label');
+  if (!preview) return;
+
+  if (ids.length === 0) {
+    // estado OK
+    if (countLbl) countLbl.textContent = '';
+    preview.innerHTML = `
+      <div class="aprov-ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Todos os pedidos aprovados
+      </div>`;
+  } else {
+    // estado pendente
+    if (countLbl) {
+      countLbl.textContent = ids.length === 1 ? '1 pendente' : `${ids.length} pendentes`;
+    }
+    const visible = ids.slice(0, APROV_MAX_VISIBLE);
+    const extra   = ids.length - visible.length;
+    const chips   = visible.map(id =>
+      `<span class="aprov-chip">${id}</span>`
+    ).join('');
+    const more = extra > 0
+      ? `<span class="aprov-more">… e mais ${extra} pedido${extra > 1 ? 's' : ''}.</span>`
+      : '';
+    preview.innerHTML = `
+      <div class="aprov-pending">
+        <span class="aprov-label">Pedidos pendentes de aprovação</span>
+        <div class="aprov-ids">${chips}${more}</div>
+      </div>`;
+  }
+}
 
 /* ── indicadores operacionais ── */
 function calcIndicadores(){
@@ -650,7 +1157,12 @@ function calcOndas(){
       const oe=card.querySelector('.o-oot');
       if(oe){const sc=oot>0?avaliaMeta(oot,'oot'):'';oe.style.color=sc==='ok'?'var(--green)':sc==='bad'?'var(--red)':''}
       const ye=card.querySelector('.o-yms');
-      if(ye){const sy=ootYms>0?avaliaMeta(ootYms,'ootOndaYms'):'';ye.style.color=sy==='ok'?'var(--green)':sy==='bad'?'var(--red)':''}
+      if(ye){
+        const sy=ootYms>0?avaliaMeta(ootYms,'ootOndaYms'):'';
+        ye.style.color=sy==='ok'?'var(--green)':sy==='bad'?'var(--red)':'';
+        // .o-yms é agora um div display — espelha o valor do input data-f="oN-oot-yms"
+        ye.textContent=ootYms>0?ootYms.toFixed(1)+'%':'—';
+      }
     }
     totD+=d;totP+=pe;ootD.push(oot);ymsD.push(ootYms);delD.push(d);pendD.push(pe);
   });
@@ -701,7 +1213,13 @@ function genWA(){
    }).join('\n');
 
   const indOpBlock = indOp ? `\n\n📊 *Indicadores Operacionais*\n${indOp}` : '';
-  const msg=`📊 *Relatório ${turno} — ${dt}*\n\n📈 *Performance Geral*\n• Fechamento FAG ${turno}: ${V('fag')||'—'}%\n• OOT Ciclo: ${V('ootc')||'—'}%\n• OOT Onda: ${V('ooto')||'—'}%\n• OOT Ciclo YMS: ${V('ootcy')||'—'}%\n• OOT Onda YMS: ${V('ootoy')||'—'}%\n\n📌 *Totais Operacionais*\n• Total planejado: ${plan||'—'} rotas\n• Realizadas: ${real} (${PCT(real,plan)})\n• Delay: ${del} rotas\n• Pendentes: ${pend} rotas${indOpBlock}\n\n🚚 *Carros Atrasados*\n${ondas}\n\n🎒 *Sacas finalizadas antes das 07h*\n• Total de sacas: ${st||'—'}\n• Sacas já fechadas: ${sf} (${PCT(sf,st)})\n• Sacas para auditar: ${sa}\n• Sacas pendentes: ${Math.max(0,st-sf-sa)}\n\n📦 *Volume Processado*\n• Volume total processado: ${fmtN(F('vol-tot'))}\n• Backlog: ${fmtN(F('vol-bl'))}\n• Primeira vez: ${fmtN(F('vol-pv'))}\n\n📦 *Volumosos*\n• One Bipe: ${fmtN(F('vol-ob'))}\n• Em Rota: ${fmtN(F('vol-er'))}${obs?'\n\n📝 *Observações*\n'+obs:''}`;
+
+  // bloco de aprovação
+  const aprovIds = parseIds(V('aprov-ids'));
+  const aprovBlock = aprovIds.length === 0
+    ? '\n\n✅ *Aprovação de Pedidos*\nTodos os pedidos aprovados'
+    : `\n\n⚠️ *Aprovação de Pedidos — ${aprovIds.length} pendente${aprovIds.length>1?'s':''}*\n${aprovIds.join(', ')}`;
+  const msg=`📊 *Relatório ${turno} — ${dt}*\n\n📈 *Performance Geral*\n• Fechamento FAG ${turno}: ${V('fag')||'—'}%\n• OOT Ciclo: ${V('ootc')||'—'}%\n• OOT Onda: ${V('ooto')||'—'}%\n• OOT Ciclo YMS: ${V('ootcy')||'—'}%\n• OOT Onda YMS: ${V('ootoy')||'—'}%\n\n📌 *Totais Operacionais*\n• Total planejado: ${plan||'—'} rotas\n• Realizadas: ${real} (${PCT(real,plan)})\n• Delay: ${del} rotas\n• Pendentes: ${pend} rotas${indOpBlock}${aprovBlock}\n\n🚚 *Carros Atrasados*\n${ondas}\n\n🎒 *Sacas finalizadas antes das 07h*\n• Total de sacas: ${st||'—'}\n• Sacas já fechadas: ${sf} (${PCT(sf,st)})\n• Sacas para auditar: ${sa}\n• Sacas pendentes: ${Math.max(0,st-sf-sa)}\n\n📦 *Volume Processado*\n• Volume total processado: ${fmtN(F('vol-tot'))}\n• Backlog: ${fmtN(F('vol-bl'))}\n• Primeira vez: ${fmtN(F('vol-pv'))}\n\n📦 *Volumosos*\n• One Bipe: ${fmtN(F('vol-ob'))}\n• Em Rota: ${fmtN(F('vol-er'))}${obs?'\n\n📝 *Observações*\n'+obs:''}`;
   const el=$('wa-out');if(el)el.textContent=msg;return msg;
 }
 
@@ -1035,12 +1553,25 @@ ${obs?`<div class="sec">📝 Observações</div><div class="card"><div class="ca
   return html;
 }
 
+/* ──────────────────────────────────────────────────────────────
+   exportPDF()
+   Gera relatório formatado via buildPDF() — HTML estático com:
+   - KPI cards limpos (sem inputs)
+   - Gráficos SVG renderizados
+   - Layout profissional sem sidebar nem formulários
+   Abre nova aba e aciona o diálogo de impressão/Salvar como PDF.
+   ────────────────────────────────────────────────────────────── */
 function exportPDF(){
-  const html=buildPDF();
-  const w=window.open('','_blank','width=1200,height=900');
+  const html = buildPDF();
+  const w = window.open('', '_blank', 'width=1200,height=900');
+  if (!w) { toast('Permita pop-ups para gerar o PDF', 'wn'); return; }
   w.document.write(html);
   w.document.close();
-  setTimeout(()=>{ try{w.focus();w.print()}catch(e){} },800);
+  // aguarda fonte e layout carregarem antes de imprimir
+  setTimeout(() => {
+    try { w.focus(); w.print(); } catch(e) {}
+  }, 900);
+  toast('Abrindo relatório para impressão…', 'ok');
 }
 
 /* ── toast ── */
@@ -1058,9 +1589,9 @@ async function sendWA(){
   const dataRaw = V('meta-data') || new Date().toISOString().slice(0,10);
   const pdfName = `SMG1_${turno}_${dataRaw}.pdf`;
 
-  // 3. captura o elemento .main ocultando .side e .hdr-r2
+  // 3. captura o elemento .main ocultando .side e .hdr-actions
   const side   = Q('.side');
-  const hdrR2  = Q('.hdr-r2');
+  const hdrR2  = Q('.hdr-actions');
   const toastEl= $('toast');
   const prevSide   = side   ? side.style.display   : null;
   const prevHdrR2  = hdrR2  ? hdrR2.style.display  : null;
@@ -1082,9 +1613,9 @@ async function sendWA(){
   await html2pdf().set(opt).from(element).save();
 
   // 5. restaura os elementos ocultados
-  if(side)    side.style.display    = prevSide;
-  if(hdrR2)   hdrR2.style.display   = prevHdrR2;
-  if(toastEl) toastEl.style.display = prevToast;
+  if(side)    side.style.display    = prevSide    ?? '';
+  if(hdrR2)   hdrR2.style.display   = prevHdrR2   ?? '';
+  if(toastEl) toastEl.style.display = prevToast   ?? '';
 
   // 6. abre WhatsApp Web com a mensagem preenchida
   const url = 'https://web.whatsapp.com/send?text=' + encodeURIComponent(text);
@@ -1248,8 +1779,7 @@ async function _captureDashboard(){
 
 /* Salva dados + captura no formato escolhido */
 async function saveWithScreenshot(fmt){
-  // 1. salva dados normalmente (JSON + LocalStorage)
-  exportJSON();
+  // 1. salva apenas no LocalStorage (sem download de JSON)
   lsSave();
 
   // 2. captura o dashboard completo
@@ -1351,7 +1881,8 @@ function exportCSV(){
     [],['SACAS'],['Total',n('sac-tot')],['Fechadas',n('sac-fech')],['Auditar',n('sac-aud')],
     [],['VOLUME'],['Total',n('vol-tot')],['Backlog',n('vol-bl')],['Primeira Vez',n('vol-pv')],
     [],['VOLUMOSOS'],['One Bipe',n('vol-ob')],['Em Rota',n('vol-er')],
-    [],['OBSERVAÇÕES'],[g('obs')]];
+    [],['OBSERVAÇÕES'],[g('obs')],
+    [],['APROVAÇÃO DE PEDIDOS'],[parseIds(g('aprov-ids')).join(', ')||'Todos aprovados']];
 
   const csv='\uFEFF'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),download:`SMG1_${g('meta-turno')||'turno'}_${(g('meta-data')||'').replace(/\//g,'-')||new Date().toISOString().slice(0,10)}.csv`});
